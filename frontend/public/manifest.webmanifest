@@ -1,0 +1,23 @@
+{
+  "name": "DODOS ELECTRO STORE",
+  "short_name": "DODOS",
+  "description": "Powering your Digital World — phones, accessories & repair parts in Rwanda",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a2744",
+  "icons": [
+    {
+      "src": "dodos-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "dodos-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

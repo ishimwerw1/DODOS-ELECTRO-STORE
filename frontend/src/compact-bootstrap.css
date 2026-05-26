@@ -1,0 +1,85 @@
+/* Compact Bootstrap Overrides for Minimal Margins/Paddings */
+*,
+*::before,
+*::after {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Base spacing scale-down (4px ~0.25rem base) */
+:root {
+  --compact-spacer-xs: 0.125rem; /* 2px */
+  --compact-spacer-sm: 0.25rem;  /* 4px */
+  --compact-spacer:   0.375rem;  /* 6px */
+  --compact-spacer-md: 0.5rem;   /* 8px */
+  --compact-spacer-lg: 0.75rem;  /* 12px */
+}
+
+/* Global container tight */
+.container,
+.container-fluid {
+  padding-left: var(--compact-spacer-md) !important;
+  padding-right: var(--compact-spacer-md) !important;
+  margin: 0 !important;
+}
+
+/* Vertical paddings/margins py/my/mb/mt */
+.py-5 { padding-top: var(--compact-spacer) !important; padding-bottom: var(--compact-spacer) !important; }
+.py-4 { padding-top: var(--compact-spacer-md) !important; padding-bottom: var(--compact-spacer-md) !important; }
+.py-3 { padding-top: var(--compact-spacer) !important; padding-bottom: var(--compact-spacer) !important; }
+.py-2, .py-md-3 { padding-top: var(--compact-spacer-sm) !important; padding-bottom: var(--compact-spacer-sm) !important; }
+
+.my-5, .my-4 { margin-top: var(--compact-spacer-sm) !important; margin-bottom: var(--compact-spacer-sm) !important; }
+.my-3 { margin-top: var(--compact-spacer-sm) !important; margin-bottom: var(--compact-spacer-sm) !important; }
+
+.mb-5, .mb-4 { margin-bottom: var(--compact-spacer) !important; }
+.mb-3 { margin-bottom: var(--compact-spacer-sm) !important; }
+.mb-2, .mb-1 { margin-bottom: var(--compact-spacer-xs) !important; }
+.mt-3, .mt-auto { margin-top: var(--compact-spacer-sm) !important; }
+
+/* Horizontal paddings px/px */
+.px-5, .p-5 { padding-left: var(--compact-spacer-md) !important; padding-right: var(--compact-spacer-md) !important; }
+.p-4 { padding: var(--compact-spacer-md) !important; }
+.px-4, .px-3, .p-3 { padding-left: var(--compact-spacer) !important; padding-right: var(--compact-spacer) !important; }
+.p-2 { padding: var(--compact-spacer-sm) !important; }
+
+/* Cards and shadows */
+.card,
+.card-body,
+.shadow-sm {
+  padding: var(--compact-spacer-sm) !important;
+  margin: var(--compact-spacer-xs) 0 !important;
+}
+.card-img-top { padding: var(--compact-spacer-sm) !important; }
+
+/* Grid/Gap */
+.row { --bs-gutter-x: var(--compact-spacer-md); --bs-gutter-y: var(--compact-spacer-sm); }
+.g-4, .gap-4 { gap: var(--compact-spacer-md) !important; }
+.g-3, .gap-3, .gap-2 { gap: var(--compact-spacer-sm) !important; }
+
+/* Navbar specific */
+.navbar {
+  padding: var(--compact-spacer-sm) 0 !important;
+}
+.navbar-brand img { height: 32px !important; }
+.navbar-nav .nav-link { padding: var(--compact-spacer-xs) var(--compact-spacer) !important; }
+
+/* Footer */
+footer { padding: var(--compact-spacer-lg) 0 !important; }
+
+/* Forms/Inputs */
+.form-control { margin-bottom: var(--compact-spacer-sm) !important; padding: var(--compact-spacer-xs) !important; }
+.btn { padding: var(--compact-spacer-xs) var(--compact-spacer-md) !important; margin: var(--compact-spacer-xs) !important; }
+
+/* Headings/Other */
+h1 { margin: var(--compact-spacer-md) 0 !important; font-size: 2.25rem !important; }
+h2, h3, h5, h6 { margin: var(--compact-spacer-sm) 0 !important; }
+.display-3 { font-size: 2.5rem !important; }
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .container { padding-left: var(--compact-spacer-sm) !important; padding-right: var(--compact-spacer-sm) !important; }
+  * { font-size: 0.875rem !important; }
+}
+
