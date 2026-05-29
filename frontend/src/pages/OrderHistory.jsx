@@ -7,126 +7,111 @@ import { toast } from 'react-toastify';
 import { useLocale } from '../context/LocaleContext';
 
 const OrderHistory = () => {
-  const { t, formatPrice } = useLocale();
-  const [orders, setOrders] = useState([]);
+  const { formatPrice } = useLocale();
+  const [orders, setOrders]   = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
+  useEffect(() => { fetchOrders(); }, []);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
       const res = await orderAPI.getOrders();
       setOrders(res.data.orders || []);
-    } catch (err) {
+    } catch {
       toast.error('Failed to load orders');
     } finally {
       setLoading(false);
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'Pending':   return <FaClock className="text-yellow-500" />;
-      case 'Approved':  return <FaCheckCircle className="text-blue-500" />;
-      case 'Completed': return <FaCheckCircle className="text-green-500" />;
-      case 'Cancelled': return <FaTimesCircle className="text-red-500" />;
-      default:          return <FaClock className="text-slate-500" />;
-    }
-  };
-
-  const getStatusClass = (status) => {
-    switch (status) {
-      case 'Pending':   return 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20';
-      case 'Approved':  return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
-      case 'Completed': return 'bg-green-500/10 text-green-500 border-green-500/20';
-      case 'Cancelled': return 'bg-red-500/10 text-red-500 border-red-500/20';
-      default:          return 'bg-slate-500/10 text-slate-500 border-slate-500/20';
-    }
+  const statusConfig = {
+    Pending:   { icon: FaClock,       color: 'bg-yellow-50 text-yellow-600 border-yellow-200' },
+    Approved:  { icon: FaCheckCircle, color: 'bg-blue-50 text-blue-600 border-blue-200' },
+    Completed: { icon: FaCheckCircle, color: 'bg-green-50 text-green-600 border-green-200' },
+    Cancelled: { icon: FaTimesCircle, color: 'bg-red-50 text-red-500 border-red-200' },
   };
 
   if (loading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center h-64">
+        <div className="w-10 h-10 border-3 border-green-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (orders.length === 0) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-        <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-6">
-          <FaShoppingBag size={32} className="text-slate-700" />
+      <div className="flex flex-col items-center justify-center py-24 text-center px-4">
+        <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-5">
+          <FaShoppingBag size={28} className="text-gray-300" />
         </div>
-        <h3 className="text-2xl font-black text-white uppercase tracking-tighter mb-2">{t('noOrders')}</h3>
-        <p className="text-slate-500 mb-8 max-w-xs">{t('noOrdersDesc') || "You haven't placed any orders yet."}</p>
-        <Link to="/products" className="btn-primary px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-xs">
-          {t('startShopping')}
+        <h3 className="text-xl font-black text-gray-900 mb-2">No Orders Yet</h3>
+        <p className="text-gray-400 text-sm mb-7 max-w-xs">You haven't placed any orders yet. Start shopping to see your orders here.</p>
+        <Link to="/products" className="bg-green-500 hover:bg-green-600 text-white font-black px-8 py-3.5 rounded-xl transition-all text-sm">
+          Start Shopping
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <div className="mb-10">
-        <h2 className="text-4xl font-black text-white uppercase tracking-tighter mb-2">My <span className="text-gray-500">Orders</span></h2>
-        <p className="text-slate-500 text-sm uppercase tracking-widest font-bold">History of your recent transactions</p>
+    <div className="p-4 md:p-6 space-y-5">
+      <div>
+        <h2 className="text-2xl font-black text-gray-900">My Orders</h2>
+        <p className="text-gray-400 text-sm mt-0.5">{orders.length} orders total</p>
       </div>
 
-      <div className="space-y-4">
-        {orders.map((order, i) => (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.05 }}
-            key={order._id}
-            className="glass rounded-3xl border border-white/5 hover:border-blue-500/20 transition-all overflow-hidden group"
-          >
-            <div className="p-6 md:p-8 flex flex-col md:flex-row md:items-center gap-6">
-              {/* Order Image/Icon */}
-              <div className="w-20 h-20 bg-white/5 rounded-2xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-white/5 group-hover:border-blue-500/20 transition-all">
-                {order.items?.[0]?.product?.image ? (
-                  <img src={order.items[0].product.image} className="w-full h-full object-contain p-2" alt="" />
-                ) : (
-                  <FaBoxOpen className="text-slate-700" size={24} />
-                )}
+      <div className="space-y-3">
+        {orders.map((order, i) => {
+          const cfg = statusConfig[order.status] || statusConfig.Pending;
+          const StatusIcon = cfg.icon;
+          return (
+            <motion.div
+              key={order._id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: i * 0.04 }}
+              className="bg-white border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:shadow-md hover:border-green-200 transition-all group"
+            >
+              {/* Image */}
+              <div className="w-16 h-16 bg-gray-50 rounded-xl flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-100">
+                {order.items?.[0]?.product?.image
+                  ? <img src={order.items[0].product.image} className="w-full h-full object-contain p-2" alt="" />
+                  : <FaBoxOpen className="text-gray-300" size={20} />
+                }
               </div>
 
-              {/* Order Info */}
+              {/* Info */}
               <div className="flex-grow">
-                <div className="flex flex-wrap items-center gap-3 mb-2">
-                  <h4 className="text-lg font-black text-white uppercase tracking-tighter">#{order.orderNumber || order._id.slice(-6)}</h4>
-                  <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border flex items-center gap-1.5 ${getStatusClass(order.status)}`}>
-                    {getStatusIcon(order.status)}
-                    {order.status}
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <h4 className="text-sm font-black text-gray-900">#{order.orderNumber || order._id.slice(-6)}</h4>
+                  <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest border flex items-center gap-1.5 ${cfg.color}`}>
+                    <StatusIcon size={10} /> {order.status}
                   </span>
                 </div>
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-slate-500 text-xs font-bold uppercase tracking-widest">
-                  <p>Date: <span className="text-slate-300 ml-1">{new Date(order.createdAt).toLocaleDateString()}</span></p>
-                  <p>Items: <span className="text-slate-300 ml-1">{order.items?.length || 0}</span></p>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400 font-semibold">
+                  <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+                  <span>{order.items?.length || 0} item{order.items?.length !== 1 ? 's' : ''}</span>
                 </div>
               </div>
 
-              {/* Price & Action */}
-              <div className="flex items-center justify-between md:flex-col md:items-end gap-4">
-                <div className="text-left md:text-right">
-                  <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] mb-1">Total Amount</p>
-                  <p className="text-2xl font-black text-white">{formatPrice(order.totalAmount)}</p>
+              {/* Price & action */}
+              <div className="flex items-center justify-between sm:flex-col sm:items-end gap-3">
+                <div className="sm:text-right">
+                  <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest mb-0.5">Total</p>
+                  <p className="text-lg font-black text-gray-900">{formatPrice(order.totalAmount)}</p>
                 </div>
-                <Link 
-                  to={`/orders/${order._id}`} 
-                  className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white hover:text-black transition-all group-hover:scale-105"
+                <Link
+                  to={`/orders/${order._id}`}
+                  className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all"
                 >
-                  <FaChevronRight size={14} />
+                  <FaChevronRight size={12} />
                 </Link>
               </div>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );

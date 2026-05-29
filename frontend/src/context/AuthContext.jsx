@@ -27,6 +27,9 @@ export const AuthProvider = ({ children }) => {
   const [user,    setUser]    = useState(null);
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState(null);
+  // True only right after register() — cleared on login/reload so returning
+  // unverified users are never blocked at the login screen.
+  const [justRegistered, setJustRegistered] = useState(false);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -60,8 +63,8 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     const res = await authAPI.login(credentials);
     localStorage.setItem('dodos_token', res.data.token);
+    setJustRegistered(false); // logging in — never show verification guard
     setUser(res.data.user);
-    /* detect locale from the user's stored phone */
     if (res.data.user?.phone) saveLocaleFromPhone(res.data.user.phone);
     return res.data;
   };
@@ -69,19 +72,21 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     const res = await authAPI.register(userData);
     localStorage.setItem('dodos_token', res.data.token);
+    setJustRegistered(true); // fresh registration — show verification guard
     setUser(res.data.user);
-    /* detect locale from the phone used at registration */
     if (userData.phone) saveLocaleFromPhone(userData.phone);
     return res.data;
   };
 
   const logout = () => {
     localStorage.removeItem('dodos_token');
+    setJustRegistered(false);
     setUser(null);
   };
 
   const verifyEmail = async (code) => {
     const res = await authAPI.verifyEmail(code);
+    setJustRegistered(false);
     setUser(prev => ({ ...prev, isVerified: true }));
     return res.data;
   };
@@ -123,6 +128,7 @@ export const AuthProvider = ({ children }) => {
       refreshSettings,
       loading, 
       isLoggedIn: !!user,
+      justRegistered,
       verifyEmail,
       resendVerification
     }}>

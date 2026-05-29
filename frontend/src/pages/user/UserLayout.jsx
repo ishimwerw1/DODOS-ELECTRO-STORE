@@ -15,11 +15,11 @@ const UserLayout = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-bg-main">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
       <div className="flex-1 flex pt-[158px]">
         <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-        <main className="flex-1 transition-all duration-500 lg:pl-[280px] flex flex-col">
+        <main className="flex-1 transition-all duration-500 lg:pl-[260px] flex flex-col">
           <div className="flex-1">
             <Outlet />
           </div>

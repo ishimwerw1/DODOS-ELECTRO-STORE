@@ -1,22 +1,28 @@
 import { useState, useEffect } from 'react';
-import { FaPlus, FaEdit, FaTrash, FaImage, FaTimes, FaEye, FaEyeSlash, FaLink } from 'react-icons/fa';
-import { slideAPI } from '../../services/api';
+import { FaPlus, FaEdit, FaTrash, FaImage, FaTimes, FaEye, FaEyeSlash, FaLink, FaLayerGroup } from 'react-icons/fa';
+import { slideAPI, categoryAPI } from '../../services/api';
 import { toast } from 'react-toastify';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const BADGE_OPTIONS = ['NEW ARRIVAL', 'HOT DEAL', 'LIMITED OFFER', 'BEST SELLER', 'SALE', 'FEATURED'];
-const emptyForm = { title: '', subtitle: '', image: '', badge: 'NEW ARRIVAL', price: '', isActive: true, order: 0 };
+const emptyForm = { title: '', subtitle: '', image: '', bannerImage: '', badge: 'NEW ARRIVAL', price: '', isActive: true, order: 0, category: '' };
 
 const SlideManagement = () => {
   const [slides, setSlides]             = useState([]);
+  const [categories, setCategories]     = useState([]);
   const [loading, setLoading]           = useState(true);
   const [isModalOpen, setIsModalOpen]   = useState(false);
   const [editingSlide, setEditingSlide] = useState(null);
   const [formData, setFormData]         = useState(emptyForm);
   const [saving, setSaving]             = useState(false);
   const [deleteId, setDeleteId]         = useState(null);
+  const [viewMode, setViewMode]         = useState('all'); // 'all', 'slides', 'banners'
+  const [formType, setFormType]         = useState('slide'); // 'slide' or 'banner'
 
-  useEffect(() => { fetchSlides(); }, []);
+  useEffect(() => { 
+    fetchSlides(); 
+    fetchCategories();
+  }, []);
 
   const fetchSlides = async () => {
     setLoading(true);
@@ -27,12 +33,32 @@ const SlideManagement = () => {
     finally { setLoading(false); }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await categoryAPI.getCategories();
+      setCategories(res.data || []);
+    } catch { console.error('Failed to fetch categories'); }
+  };
+
   const openModal = (slide = null) => {
     if (slide) {
       setEditingSlide(slide);
-      setFormData({ title: slide.title || '', subtitle: slide.subtitle || '', image: slide.image || '', badge: slide.badge || 'NEW ARRIVAL', price: slide.price || '', isActive: slide.isActive !== false, order: slide.order ?? 0 });
+      const isBanner = !!slide.bannerImage && !slide.image;
+      setFormType(isBanner ? 'banner' : 'slide');
+      setFormData({ 
+        title: slide.title || '', 
+        subtitle: slide.subtitle || '', 
+        image: slide.image || '', 
+        bannerImage: slide.bannerImage || '', 
+        badge: slide.badge || 'NEW ARRIVAL', 
+        price: slide.price || '', 
+        isActive: slide.isActive !== false, 
+        order: slide.order ?? 0,
+        category: slide.category || ''
+      });
     } else {
       setEditingSlide(null);
+      setFormType('slide');
       setFormData({ ...emptyForm, order: slides.length });
     }
     setIsModalOpen(true);
@@ -57,7 +83,8 @@ const SlideManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.image.trim()) return toast.error('Please enter an image URL');
+    if (formType === 'slide' && !formData.image.trim()) return toast.error('Please provide a product image for the hero slide');
+    if (formType === 'banner' && !formData.bannerImage.trim()) return toast.error('Please provide a banner image');
     setSaving(true);
     try {
       if (editingSlide) {
@@ -98,12 +125,19 @@ const SlideManagement = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white tracking-tight">Slideshow Manager</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Manage homepage hero banner slides</p>
+          <h2 className="text-2xl font-black text-white uppercase tracking-tighter">Marketing Slides & Banners</h2>
+          <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.2em] mt-1">Manage hero slideshow and category shop banners</p>
         </div>
-        <button onClick={() => openModal()} className="flex items-center gap-2 btn-glow text-white px-5 py-2.5 rounded-xl font-bold text-sm">
-          <FaPlus size={12} /> Add Slide
-        </button>
+        <div className="flex items-center gap-3">
+          <div className="flex p-1 bg-white/5 rounded-xl border border-white/10">
+            <button onClick={() => setViewMode('all')} className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${viewMode === 'all' ? 'bg-white/10 text-white' : 'text-slate-500 hover:text-slate-300'}`}>All</button>
+            <button onClick={() => setViewMode('slides')} className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${viewMode === 'slides' ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>Slides</button>
+            <button onClick={() => setViewMode('banners')} className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${viewMode === 'banners' ? 'bg-green-600 text-white' : 'text-slate-500 hover:text-slate-300'}`}>Banners</button>
+          </div>
+          <button onClick={() => openModal()} className="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all shadow-lg shadow-blue-500/20 flex items-center gap-2">
+            <FaPlus size={10} /> Add New
+          </button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -122,32 +156,41 @@ const SlideManagement = () => {
 
       {/* Grid */}
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => <div key={i} className="h-64 glass rounded-2xl border border-white/5 animate-pulse" />)}
-        </div>
-      ) : slides.length === 0 ? (
-        <div className="glass rounded-2xl border border-white/5 py-20 text-center">
-          <FaImage size={40} className="mx-auto text-slate-600 mb-4" />
-          <p className="text-slate-400 font-semibold">No slides yet.</p>
-          <button onClick={() => openModal()} className="mt-4 btn-glow text-white px-6 py-2.5 rounded-xl text-sm font-bold inline-flex items-center gap-2">
-            <FaPlus size={11} /> Add Slide
-          </button>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="glass rounded-2xl border border-white/5 h-64 animate-pulse" />
+          ))}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {slides.map(slide => (
-            <motion.div key={slide._id} layout initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-              className={`glass rounded-2xl border border-white/5 overflow-hidden group hover:border-blue-500/30 transition-all ${!slide.isActive ? 'opacity-50' : ''}`}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {slides.filter(s => {
+            if (viewMode === 'slides') return !!s.image;
+            if (viewMode === 'banners') return !s.image;
+            return true;
+          }).map((slide) => (
+            <motion.div
+              layout
+              key={slide._id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className={`glass rounded-2xl border border-white/10 overflow-hidden group hover:border-white/20 transition-all ${!slide.isActive ? 'opacity-60' : ''}`}
+            >
               <div className="relative h-44 bg-white/5 overflow-hidden">
                 {slide.image ? (
                   <img src={slide.image} alt={slide.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={e => { e.target.style.display='none'; }} />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center"><FaImage size={32} className="text-slate-600" /></div>
                 )}
-                <span className="absolute top-3 left-3 bg-blue-600 text-white text-[9px] font-black px-2.5 py-1 rounded-lg uppercase tracking-widest">{slide.badge}</span>
-                <span className={`absolute top-3 right-3 text-[9px] font-black px-2.5 py-1 rounded-lg border ${slide.isActive ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
-                  {slide.isActive ? 'Active' : 'Inactive'}
-                </span>
+                <div className="absolute top-3 left-3 flex flex-col gap-2">
+                  <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-widest shadow-lg ${slide.image ? 'bg-blue-600 text-white' : 'bg-green-600 text-white'}`}>
+                    {slide.image ? 'Hero Slide' : 'Shop Banner'}
+                  </span>
+                  {slide.category && (
+                    <span className="bg-black/60 backdrop-blur-md text-white text-[9px] font-bold px-2 py-0.5 rounded-md border border-white/10">
+                      Category: {slide.category}
+                    </span>
+                  )}
+                </div>
                 <span className="absolute bottom-3 left-3 bg-black/60 text-white text-[9px] font-bold px-2 py-0.5 rounded-md">#{slide.order + 1}</span>
               </div>
               <div className="p-4">
@@ -179,35 +222,86 @@ const SlideManagement = () => {
               className="relative w-full max-w-2xl glass rounded-2xl border border-white/10 shadow-2xl overflow-hidden">
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
                 <div>
-                  <h3 className="font-black text-white text-base">{editingSlide ? 'Edit Slide' : 'Add New Slide'}</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Fill in the slide details below</p>
+                  <h3 className="font-black text-white text-base">{editingSlide ? 'Edit' : 'Add New'} {formType === 'banner' ? 'Shop Banner' : 'Hero Slide'}</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">Fill in the {formType} details below</p>
                 </div>
                 <button onClick={closeModal} className="w-8 h-8 glass border border-white/10 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-colors">
                   <FaTimes size={12} />
                 </button>
               </div>
+
+              {/* Form Type Tabs */}
+              {!editingSlide && (
+                <div className="flex p-2 bg-white/5 border-b border-white/5">
+                  <button type="button" onClick={() => setFormType('slide')}
+                    className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest rounded-lg transition-all ${formType === 'slide' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'text-slate-500 hover:text-slate-300'}`}>
+                    Hero Slide
+                  </button>
+                  <button type="button" onClick={() => setFormType('banner')}
+                    className={`flex-1 py-2 text-xs font-bold uppercase tracking-widest rounded-lg transition-all ${formType === 'banner' ? 'bg-green-600 text-white shadow-lg shadow-green-500/20' : 'text-slate-500 hover:text-slate-300'}`}>
+                    Shop Banner
+                  </button>
+                </div>
+              )}
+
               <form onSubmit={handleSubmit} className="p-6 space-y-5 overflow-y-auto max-h-[75vh]">
-                {/* Image URL */}
+                
+                {/* Product Image URL (Hero Slide Only) */}
+                {formType === 'slide' && (
+                  <div>
+                    <label className="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">
+                      <FaLink size={9} className="inline mr-1.5" />Product Image URL / Upload *
+                    </label>
+                    <div className="flex gap-2">
+                      <input type="url" value={formData.image} onChange={e => set('image', e.target.value)}
+                        placeholder="https://example.com/product.png"
+                        className="flex-1 input-dark rounded-xl px-4 py-3 text-sm" required={formType === 'slide'} />
+                      <label className="cursor-pointer glass border border-white/10 hover:border-blue-500/50 rounded-xl px-4 flex items-center justify-center text-slate-400 hover:text-blue-400 transition-all">
+                        <FaPlus size={14} />
+                        <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
+                      </label>
+                    </div>
+                    {formData.image && (
+                      <div className="mt-3 rounded-xl overflow-hidden border border-white/10 h-28 bg-white/5 flex items-center justify-center">
+                        <img src={formData.image} alt="product preview" className="h-full object-contain p-2"
+                          onError={e => { e.target.style.display='none'; }} />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Banner Image URL (Both but different labels) */}
                 <div>
                   <label className="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">
-                    <FaLink size={9} className="inline mr-1.5" />Image URL / Upload *
+                    <FaImage size={9} className="inline mr-1.5" />{formType === 'banner' ? 'Banner Image *' : 'Slide Background (optional)'}
                   </label>
+                  <p className="text-[10px] text-slate-600 mb-2">
+                    {formType === 'banner' ? 'Wide banner image shown in shop sections.' : 'Wide banner image shown as the slide background.'}
+                  </p>
                   <div className="flex gap-2">
-                    <input type="url" value={formData.image} onChange={e => set('image', e.target.value)}
-                      placeholder="https://example.com/banner.jpg"
-                      className="flex-1 input-dark rounded-xl px-4 py-3 text-sm" required />
-                    <label className="cursor-pointer glass border border-white/10 hover:border-blue-500/50 rounded-xl px-4 flex items-center justify-center text-slate-400 hover:text-blue-400 transition-all">
+                    <input type="url" value={formData.bannerImage} onChange={e => set('bannerImage', e.target.value)}
+                      placeholder="https://example.com/banner-wide.jpg"
+                      className="flex-1 input-dark rounded-xl px-4 py-3 text-sm" required={formType === 'banner'} />
+                    <label className="cursor-pointer glass border border-white/10 hover:border-green-500/50 rounded-xl px-4 flex items-center justify-center text-slate-400 hover:text-green-400 transition-all">
                       <FaPlus size={14} />
-                      <input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
+                      <input type="file" className="hidden" accept="image/*" onChange={e => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => set('bannerImage', reader.result);
+                          reader.readAsDataURL(file);
+                        }
+                      }} />
                     </label>
                   </div>
-                  {formData.image && (
-                    <div className="mt-3 rounded-xl overflow-hidden border border-white/10 h-36 bg-white/5">
-                      <img src={formData.image} alt="preview" className="w-full h-full object-cover"
+                  {formData.bannerImage && (
+                    <div className="mt-3 rounded-xl overflow-hidden border border-white/10 h-28 bg-white/5">
+                      <img src={formData.bannerImage} alt="banner preview" className="w-full h-full object-cover"
                         onError={e => { e.target.style.display='none'; }} />
                     </div>
                   )}
                 </div>
+
                 {/* Title */}
                 <div>
                   <label className="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">Title *</label>
@@ -220,6 +314,20 @@ const SlideManagement = () => {
                   <input type="text" value={formData.subtitle} onChange={e => set('subtitle', e.target.value)}
                     placeholder="e.g. Ultra-durable tempered glass" className="w-full input-dark rounded-xl px-4 py-3 text-sm" required />
                 </div>
+
+                {/* Category Selection (For Banners) */}
+                {formType === 'banner' && (
+                  <div>
+                    <label className="block text-xs text-slate-500 font-bold uppercase tracking-wider mb-2">
+                      <FaLayerGroup size={9} className="inline mr-1.5" />Assign to Category Section
+                    </label>
+                    <select value={formData.category} onChange={e => set('category', e.target.value)} className="w-full input-dark rounded-xl px-3 py-3 text-sm">
+                      <option value="">None — general banner</option>
+                      {categories.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
+                    </select>
+                    <p className="text-[10px] text-slate-600 mt-2">If assigned, this banner will appear in the home page section for this category.</p>
+                  </div>
+                )}
                 {/* Badge + Price + Order */}
                 <div className="grid grid-cols-3 gap-4">
                   <div>

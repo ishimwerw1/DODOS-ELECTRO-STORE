@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import ScrollToTop from './components/ScrollToTop';
 import Footer from './components/Footer';
 
 import { AuthProvider } from './context/AuthContext';
@@ -77,6 +78,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider>
         <Router>
+          <ScrollToTop />
           <AuthProvider>
             <CartProvider>
               <WishlistProvider>

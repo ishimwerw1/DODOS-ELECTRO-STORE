@@ -11,7 +11,7 @@ import {
 } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { adminAPI, notificationAPI } from '../../services/api';
+import { adminAPI, notificationAPI, chatAPI } from '../../services/api';
 import { toast } from 'react-toastify';
 
 const menuItems = [
@@ -33,6 +33,7 @@ const AdminLayout = () => {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [chatUnread, setChatUnread] = useState(0);
   const { logout, user } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate  = useNavigate();
@@ -41,8 +42,21 @@ const AdminLayout = () => {
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 60000); // Fetch every minute
+    const interval = setInterval(fetchNotifications, 60000);
     return () => clearInterval(interval);
+  }, []);
+
+  // Poll admin unread chat count every 10s
+  useEffect(() => {
+    const fetchChatUnread = async () => {
+      try {
+        const res = await chatAPI.getUnreadCount();
+        setChatUnread(res.data.count ?? 0);
+      } catch {}
+    };
+    fetchChatUnread();
+    const id = setInterval(fetchChatUnread, 10000);
+    return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
@@ -170,6 +184,12 @@ const AdminLayout = () => {
                 <Icon size={18} className={`${active ? 'text-white' : theme === 'Dark' ? 'text-gray-600 group-hover:text-gray-300' : 'text-slate-400 group-hover:text-slate-600'}`} />
                 {!collapsed && <span className="text-[13px] font-black uppercase tracking-widest">{item.label}</span>}
                 {active && !collapsed && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white/50" />}
+                {/* Chat unread badge */}
+                {item.path === '/admin/chat' && chatUnread > 0 && (
+                  <span className={`${collapsed ? 'absolute -top-1 -right-1' : 'ml-auto'} min-w-[18px] h-[18px] bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center px-1 border-2 ${active ? 'border-blue-600' : 'border-white'}`}>
+                    {chatUnread > 9 ? '9+' : chatUnread}
+                  </span>
+                )}
               </Link>
             );
           })}

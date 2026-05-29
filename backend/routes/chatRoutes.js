@@ -8,16 +8,16 @@ import {
   editMessage,
   deleteMessage
 } from '../controllers/chatController.js';
-import { protect, verifiedOnly } from '../middleware/auth.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
 router.get('/admin', protect, getAdminId);
-router.get('/unread/count', protect, verifiedOnly, getUnreadCount);
-router.get('/conversations', protect, verifiedOnly, getConversations);
-router.get('/:otherUserId', protect, verifiedOnly, getConversation);
-router.post('/', protect, verifiedOnly, sendMessage);
-router.put('/:messageId', protect, verifiedOnly, editMessage);
-router.delete('/:messageId', protect, verifiedOnly, deleteMessage);
+router.get('/unread/count', protect, getUnreadCount);
+router.get('/conversations', protect, getConversations);
+router.get('/:otherUserId', protect, getConversation);
+router.post('/', protect, sendMessage);
+router.put('/:messageId', protect, editMessage);
+router.delete('/:messageId', protect, deleteMessage);
 
 export default router;

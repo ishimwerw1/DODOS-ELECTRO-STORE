@@ -1,7 +1,5 @@
-@import "tailwindcss";
-
-/* ─── Google Fonts ─── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
 @theme {
   /* Dodos Brand Blue & Deep Black */
@@ -25,12 +23,12 @@
 
 /* ─── Theme Variables ─── */
 :root {
-  --bg-main: #ffffff;
-  --bg-card: #f8fafc;
-  --bg-surface: #f1f5f9;
-  --border-main: rgba(0, 0, 0, 0.05);
-  --text-main: #0f172a;
-  --text-secondary: #64748b;
+  --bg-main: #f3f4f6;
+  --bg-card: #ffffff;
+  --bg-surface: #f9fafb;
+  --border-main: rgba(0, 0, 0, 0.08);
+  --text-main: #111827;
+  --text-secondary: #6b7280;
 }
 
 .dark {
@@ -63,7 +61,20 @@
   a, button, [role="button"] {
     text-decoration: none !important;
     transition: all 0.3s ease;
+    cursor: pointer;
   }
+
+  /* ─── Cursor: use normal OS pointer ─── */
+  * { cursor: default; }
+
+  a, button, [role="button"], label, select,
+  input[type="checkbox"], input[type="radio"],
+  input[type="submit"], input[type="button"],
+  input[type="file"], [tabindex]:not([tabindex="-1"]) {
+    cursor: pointer;
+  }
+
+  input, textarea { cursor: text; }
 
   /* Custom scrollbar */
   ::-webkit-scrollbar       { width: 8px; height: 8px; }
@@ -127,6 +138,45 @@
 
 .btn-premium:hover::after {
   left: 100%;
+}
+
+.btn-green {
+  background: #22c55e;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 10px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px -2px rgba(34, 197, 94, 0.35);
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-green:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -2px rgba(34, 197, 94, 0.45);
+}
+
+.btn-green:active {
+  transform: scale(0.97);
+}
+
+.card-shop {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card-shop:hover {
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12);
+  transform: translateY(-3px);
 }
 
 .card-premium {

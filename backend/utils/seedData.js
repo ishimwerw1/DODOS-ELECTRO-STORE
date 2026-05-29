@@ -171,17 +171,29 @@ const seedData = async () => {
     console.log('✅ Seeded products successfully');
 
     // Create admin user if not exists
-    const adminExists = await User.findOne({ email: 'admin@dodoselectrostore.com' });
+    const adminExists = await User.findOne({ email: 'admin@dodos.com' });
     if (!adminExists) {
       await User.create({
         fullName: 'Admin User',
-        email: 'admin@dodoselectrostore.com',
+        email: 'admin@dodos.com',
         phone: '+250780000000',
         password: 'admin123',
-        role: 'admin'
+        role: 'admin',
+        isVerified: true
       });
-      console.log('✅ Admin user created (admin@dodoselectrostore.com / admin123)');
+      console.log('✅ Admin user created (admin@dodos.com / admin123)');
+    } else {
+      // Ensure existing admin is verified and has correct role
+      await User.findOneAndUpdate(
+        { email: 'admin@dodos.com' },
+        { role: 'admin', isVerified: true }
+      );
+      console.log('✅ Admin user already exists and is up to date');
     }
+
+    // Remove old admin account if it exists
+    await User.deleteOne({ email: 'admin@dodoselectrostore.com' });
+    console.log('🗑️  Removed old admin account (if existed)');
 
     process.exit(0);
   } catch (error) {

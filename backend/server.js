@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import connectDB from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import User from './models/User.js';
 
 // Route imports
 import authRoutes from './routes/authRoutes.js';
@@ -29,6 +30,37 @@ const PORT = process.env.PORT || 5008;
 
 // Connect to MongoDB
 connectDB();
+
+// Ensure admin account exists on every startup
+const ensureAdminExists = async () => {
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@dodos.com';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+
+    let admin = await User.findOne({ email: adminEmail });
+    if (!admin) {
+      await User.create({
+        fullName: 'Admin',
+        email: adminEmail,
+        phone: '+250780000000',
+        password: adminPassword,
+        role: 'admin',
+        isVerified: true,
+      });
+      console.log(`✅ Admin account created: ${adminEmail}`);
+    } else if (!admin.isVerified || admin.role !== 'admin') {
+      admin.isVerified = true;
+      admin.role = 'admin';
+      await admin.save();
+      console.log(`✅ Admin account updated: ${adminEmail}`);
+    }
+  } catch (err) {
+    console.error('❌ Failed to ensure admin account:', err.message);
+  }
+};
+
+// Run after DB connects
+setTimeout(ensureAdminExists, 2000);
 
 // Security middleware
 app.use(helmet());

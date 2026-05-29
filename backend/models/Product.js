@@ -21,6 +21,11 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Category is required'],
     trim: true
   },
+  subcategory: {
+    type: String,
+    default: '',
+    trim: true
+  },
   compatible: {
     type: String,
     required: [true, 'Compatibility info is required'],

@@ -15,6 +15,12 @@ export const getProducts = async (req, res, next) => {
       filters.push({ category });
     }
 
+    // subcategory filter
+    const { subcategory } = req.query;
+    if (subcategory) {
+      filters.push({ subcategory });
+    }
+
     if (brand) {
       const brands = brand.split(',').map((b) => b.trim()).filter(Boolean);
       if (brands.length > 1) {

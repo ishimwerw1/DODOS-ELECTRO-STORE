@@ -12,7 +12,8 @@ const CategoryManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [formData, setFormData] = useState({ name: '', description: '', image: '', isActive: true, highlightedHome: false });
+  const [formData, setFormData] = useState({ name: '', description: '', image: '', subcategories: [], isActive: true, highlightedHome: false });
+  const [subInput, setSubInput] = useState('');
 
   const filteredCategories = categories.filter(cat => 
     cat.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -54,14 +55,28 @@ const CategoryManagement = () => {
         name: category.name, 
         description: category.description || '', 
         image: category.image || '',
+        subcategories: category.subcategories || [],
         isActive: category.isActive !== false,
         highlightedHome: category.highlightedHome === true
       });
     } else {
       setEditingCategory(null);
-      setFormData({ name: '', description: '', image: '', isActive: true, highlightedHome: false });
+      setFormData({ name: '', description: '', image: '', subcategories: [], isActive: true, highlightedHome: false });
     }
+    setSubInput('');
     setIsModalOpen(true);
+  };
+
+  const addSubcategory = () => {
+    const val = subInput.trim();
+    if (!val) return;
+    if (formData.subcategories.includes(val)) return;
+    setFormData(prev => ({ ...prev, subcategories: [...prev.subcategories, val] }));
+    setSubInput('');
+  };
+
+  const removeSubcategory = (sub) => {
+    setFormData(prev => ({ ...prev, subcategories: prev.subcategories.filter(s => s !== sub) }));
   };
 
   const handleSubmit = async (e) => {
@@ -165,7 +180,17 @@ const CategoryManagement = () => {
             </div>
             <div>
               <h3 className={`text-lg font-black tracking-tight ${theme === 'Dark' ? 'text-white' : 'text-slate-900'}`}>{category.name}</h3>
-              <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">120 Products</p>
+              <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1">{category.productCount || 0} Products</p>
+              {category.subcategories?.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {category.subcategories.slice(0, 3).map(sub => (
+                    <span key={sub} className="text-[9px] bg-green-50 text-green-600 border border-green-100 px-2 py-0.5 rounded-md font-semibold uppercase tracking-wider">{sub}</span>
+                  ))}
+                  {category.subcategories.length > 3 && (
+                    <span className="text-[9px] text-slate-400 font-semibold">+{category.subcategories.length - 3} more</span>
+                  )}
+                </div>
+              )}
               <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-between">
                 <span className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest ${category.isActive !== false ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'}`}>
                   {category.isActive !== false ? 'Active' : 'Inactive'}
@@ -251,6 +276,41 @@ const CategoryManagement = () => {
                     placeholder="Describe the category..." 
                     className={`w-full px-5 py-3.5 rounded-2xl text-xs font-bold outline-none border transition-all resize-none ${theme === 'Dark' ? 'bg-white/5 border-white/5 text-white focus:border-blue-500/50' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500/50'}`} 
                   />
+                </div>
+
+                {/* ── Subcategories ── */}
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Subcategories</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={subInput}
+                      onChange={e => setSubInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addSubcategory(); } }}
+                      placeholder="e.g. iPhone Screens"
+                      className={`flex-1 px-4 py-3 rounded-xl text-xs font-bold outline-none border transition-all ${theme === 'Dark' ? 'bg-white/5 border-white/5 text-white focus:border-blue-500/50' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500/50'}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={addSubcategory}
+                      className="px-4 py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center gap-1.5"
+                    >
+                      <FaPlus size={10} /> Add
+                    </button>
+                  </div>
+                  {formData.subcategories.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {formData.subcategories.map(sub => (
+                        <span key={sub} className="flex items-center gap-1.5 bg-green-50 border border-green-200 text-green-700 text-[10px] font-bold px-3 py-1.5 rounded-lg uppercase tracking-widest">
+                          {sub}
+                          <button type="button" onClick={() => removeSubcategory(sub)} className="text-green-500 hover:text-red-500 transition-colors ml-0.5">
+                            <FaTimes size={9} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-[10px] text-slate-400 ml-1">Press Enter or click Add. These appear as filters in the shop.</p>
                 </div>
 
                 <div className="flex flex-col gap-4">

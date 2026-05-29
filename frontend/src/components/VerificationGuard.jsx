@@ -5,12 +5,20 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
 const VerificationGuard = ({ children }) => {
-  const { user, isLoggedIn, verifyEmail, resendVerification, logout } = useAuth();
+  const { user, isLoggedIn, justRegistered, verifyEmail, resendVerification, logout } = useAuth();
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // If not logged in, or logged in and verified, or admin, allow through
-  if (!isLoggedIn || !user || user.isVerified || user.role === 'admin') {
+  // Show verification screen ONLY when the user just registered AND is not yet verified.
+  // Logging in — even with an unverified account — never triggers this screen.
+  // Admins are always passed through.
+  if (
+    !isLoggedIn ||
+    !user ||
+    user.isVerified === true ||
+    user.role === 'admin' ||
+    !justRegistered
+  ) {
     return children;
   }
 

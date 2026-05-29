@@ -11,7 +11,11 @@ const slideSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    required: true
+    default: ''
+  },
+  bannerImage: {
+    type: String,
+    default: ''   // separate wide banner image (different from product image)
   },
   badge: {
     type: String,
@@ -24,6 +28,10 @@ const slideSchema = new mongoose.Schema({
   order: {
     type: Number,
     default: 0
+  },
+  category: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

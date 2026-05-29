@@ -9,17 +9,20 @@ import {
 import { productAPI, categoryAPI, slideAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import CategoriesSection from '../components/CategoriesSection';
+import PromoBanner from '../components/PromoBanner';
 import { useLocale } from '../context/LocaleContext';
 
 const Home = () => {
   const { t, formatPrice } = useLocale();
   const navigate = useNavigate();
 
-  const [topDeals, setTopDeals] = useState([]);
+  const [topDeals, setTopDeals]       = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [slides, setSlides] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories]   = useState([]);
+  const [slides, setSlides]           = useState([]);
+  const [promoBanners, setPromoBanners] = useState([]); // slides that have bannerImage and NO product image
+  const [categorySections, setCategorySections] = useState([]); // Array of { category, products, banner }
+  const [loading, setLoading]         = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
 
   useEffect(() => {
@@ -32,20 +35,43 @@ const Home = () => {
         ]);
 
         const allProducts = prodRes?.data?.products ?? [];
+        const activeCategories = (catRes.data || []).filter(c => c.isActive);
+        
         setTopDeals(allProducts.filter(p => p.discount > 0).slice(0, 6));
         setNewArrivals(allProducts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6));
-        setCategories(catRes.data || []);
+        setCategories(activeCategories);
+
         if (slideRes.data?.length) {
-          setSlides(slideRes.data.map(slide => ({
-            id: slide._id,
-            title: slide.title,
-            subtitle: slide.subtitle,
-            image: slide.image,
-            tag: slide.badge || 'Featured',
-            accent: slide.accent || '#0d6efd',
-            bg: slide.bg || '#05070a',
+          const mapped = slideRes.data.map(slide => ({
+            id:          slide._id,
+            title:       slide.title,
+            subtitle:    slide.subtitle,
+            image:       slide.image || '',
+            bannerImage: slide.bannerImage || '',
+            tag:         slide.badge || 'Featured',
+            category:    slide.category || '',
             stats: { rating: '4.9', reviews: '10k+', delivery: 'Fast' }
-          })));
+          }));
+
+          // Slides: Anything with a product image
+          setSlides(mapped.filter(s => s.image));
+          
+          // Banners: Anything with a bannerImage
+          const banners = mapped.filter(s => s.bannerImage);
+          setPromoBanners(banners);
+
+          // Group products by category
+          const sections = activeCategories.map(cat => {
+            const catProducts = allProducts.filter(p => p.category === cat.name).slice(0, 5);
+            const catBanner = banners.find(b => b.category === cat.name);
+            return {
+              category: cat,
+              products: catProducts,
+              banner: catBanner
+            };
+          }).filter(section => section.products.length > 0 || section.banner);
+          
+          setCategorySections(sections);
         }
       } catch (err) {
         console.error('Failed to fetch home data:', err);
@@ -66,158 +92,221 @@ const Home = () => {
   const currentSlide = slides[activeSlide];
 
   return (
-    <div className="bg-bg-main min-h-screen pt-7 pb-20 w-full overflow-x-hidden bg-mesh">
+    <div className="bg-gray-50 min-h-screen pt-7 pb-20 w-full overflow-x-hidden">
       
-      {/* ── HERO SECTION ── */}
+      {/* ── HERO SLIDESHOW ── */}
       {slides.length > 0 && (
-        <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-20">
-          <div className="relative h-[680px] rounded-[3rem] overflow-hidden bg-[#0a0d14] border border-white/5 shadow-2xl">
-            {/* Animated Background Elements */}
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 animate-pulse" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full translate-y-1/2 -translate-x-1/4" />
-            
+        <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-10">
+          <div className="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm" style={{ minHeight: '420px' }}>
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeSlide}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-                className="absolute inset-0 flex items-center"
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -40 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                className="absolute inset-0"
               >
-                <div className="grid lg:grid-cols-2 h-full w-full">
-                  <div className="p-12 xl:p-20 flex flex-col justify-center relative z-10">
+                <div className="grid lg:grid-cols-2 h-full min-h-[420px]">
+
+                  {/* ── LEFT: text ── */}
+                  <div className="flex flex-col justify-center px-10 py-12 xl:px-16 relative z-10">
+                    {/* Badge */}
                     <motion.div
-                      initial={{ y: 20, opacity: 0 }}
+                      initial={{ y: 12, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.2 }}
-                      className="flex items-center gap-3 mb-6"
+                      transition={{ delay: 0.15 }}
+                      className="flex items-center gap-3 mb-5"
                     >
-                      <span className="bg-blue-600/10 text-blue-400 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest border border-blue-500/20">
+                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-200">
                         {currentSlide.tag}
                       </span>
-                      <div className="flex items-center gap-1 text-yellow-500">
-                        <FaStar size={12} />
-                        <span className="text-white text-xs font-black">{currentSlide.stats.rating}</span>
-                        <span className="text-slate-500 text-xs font-bold">({currentSlide.stats.reviews} reviews)</span>
+                      <div className="flex items-center gap-1">
+                        <FaStar size={11} className="text-yellow-400" />
+                        <span className="text-gray-700 text-xs font-black">{currentSlide.stats.rating}</span>
+                        <span className="text-gray-400 text-xs">({currentSlide.stats.reviews} reviews)</span>
                       </div>
                     </motion.div>
 
+                    {/* Title */}
                     <motion.h1
-                      initial={{ y: 30, opacity: 0 }}
+                      initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.3 }}
-                      className="text-5xl xl:text-7xl font-black text-white leading-[1.1] tracking-tighter mb-8"
+                      transition={{ delay: 0.25 }}
+                      className="text-4xl xl:text-5xl font-black text-gray-900 leading-tight tracking-tight mb-4"
                     >
-                      {currentSlide.title.split(' ').map((word, i) => (
-                        <span key={i} className={word === 'Accessories' || word === 'Technical' ? 'text-gradient-blue' : ''}>
-                          {word}{' '}
-                        </span>
-                      ))}
+                      {currentSlide.title}
                     </motion.h1>
 
+                    {/* Subtitle */}
                     <motion.p
-                      initial={{ y: 30, opacity: 0 }}
+                      initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.4 }}
-                      className="text-slate-400 text-lg xl:text-xl font-medium mb-10 max-w-lg leading-relaxed"
+                      transition={{ delay: 0.35 }}
+                      className="text-gray-500 text-base mb-8 max-w-md leading-relaxed"
                     >
                       {currentSlide.subtitle}
                     </motion.p>
 
+                    {/* CTAs */}
                     <motion.div
-                      initial={{ y: 30, opacity: 0 }}
+                      initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.5 }}
-                      className="flex items-center gap-5"
+                      transition={{ delay: 0.45 }}
+                      className="flex items-center gap-4 flex-wrap"
                     >
-                      <Link to="/products" className="btn-premium flex items-center gap-3 group">
-                        Shop Now <FaArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                      <Link
+                        to="/products"
+                        className="bg-green-500 hover:bg-green-600 text-white font-black px-7 py-3.5 rounded-xl text-sm flex items-center gap-2 transition-all shadow-sm shadow-green-500/20 group"
+                      >
+                        Shop Now <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
                       </Link>
-                      <Link to="/categories" className="px-8 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-white font-black uppercase tracking-widest text-xs hover:bg-white/10 transition-all">
+                      <Link
+                        to="/categories"
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-7 py-3.5 rounded-xl text-sm flex items-center gap-2 transition-all border border-gray-200"
+                      >
                         Explore Categories
                       </Link>
                     </motion.div>
 
+                    {/* Stats strip */}
                     <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.7 }}
-                    className="mt-16 grid grid-cols-3 gap-8 border-t border-white/5 pt-8"
-                  >
-                    <div>
-                      <p className="text-blue-400 font-black text-xl">100%</p>
-                      <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">{t('genuineParts') || 'Genuine Parts'}</p>
-                    </div>
-                    <div>
-                      <p className="text-blue-400 font-black text-xl">24h</p>
-                      <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">{t('expressDelivery') || 'Express Delivery'}</p>
-                    </div>
-                    <div>
-                      <p className="text-blue-400 font-black text-xl">1yr</p>
-                      <p className="text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-1">{t('localWarranty') || 'Local Warranty'}</p>
-                    </div>
-                  </motion.div>
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.6 }}
+                      className="mt-10 pt-6 border-t border-gray-100 grid grid-cols-3 gap-6"
+                    >
+                      {[
+                        { value: '100%', label: t('genuineParts') || 'Genuine Parts' },
+                        { value: '24h',  label: t('expressDelivery') || 'Express Delivery' },
+                        { value: '1yr',  label: t('localWarranty') || 'Local Warranty' },
+                      ].map((s, i) => (
+                        <div key={i}>
+                          <p className="text-green-600 font-black text-xl">{s.value}</p>
+                          <p className="text-gray-400 text-[10px] font-semibold uppercase tracking-widest mt-0.5">{s.label}</p>
+                        </div>
+                      ))}
+                    </motion.div>
                   </div>
 
-                  <div className="relative hidden lg:flex items-center justify-center p-12 overflow-hidden">
+                  {/* ── RIGHT: image ── */}
+                  <div className="relative hidden lg:flex items-center justify-center overflow-hidden"
+                    style={currentSlide.bannerImage ? {
+                      backgroundImage: `url(${currentSlide.bannerImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    } : {}}
+                  >
+                    {/* Overlay when banner image is set */}
+                    {currentSlide.bannerImage && (
+                      <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px]" />
+                    )}
+
+                    {/* Decorative circles (shown when no banner) */}
+                    {!currentSlide.bannerImage && (
+                      <>
+                        <div className="absolute w-80 h-80 rounded-full border-2 border-green-100 opacity-60" />
+                        <div className="absolute w-56 h-56 rounded-full bg-green-50 opacity-80" />
+                      </>
+                    )}
+
+                    {/* Background tint when no banner */}
+                    {!currentSlide.bannerImage && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-green-50/40" />
+                    )}
+
+                    {currentSlide.image && (
+                      <motion.img
+                        key={activeSlide}
+                        initial={{ scale: 0.85, opacity: 0, rotate: -5 }}
+                        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                        transition={{ duration: 0.7, ease: 'easeOut' }}
+                        src={currentSlide.image}
+                        alt={currentSlide.title}
+                        className="relative z-10 max-h-[340px] max-w-[90%] object-contain drop-shadow-xl"
+                      />
+                    )}
+
+                    {/* Floating badge — rating */}
                     <motion.div
-                      initial={{ scale: 0.8, opacity: 0, rotate: -10 }}
-                      animate={{ scale: 1, opacity: 1, rotate: 0 }}
-                      transition={{ duration: 1, ease: 'easeOut' }}
-                      className="relative z-10 w-full h-full flex items-center justify-center"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.5, type: 'spring' }}
+                      className="absolute top-8 right-8 bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-lg z-20"
                     >
-                      <img src={currentSlide.image} className="max-h-[85%] object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.8)] animate-float" alt="Product" />
-                      
-                      {/* Floating Elements */}
-                      <div className="absolute top-20 right-20 w-16 h-16 bg-[#0a0d14] border border-white/10 rounded-2xl flex items-center justify-center shadow-2xl animate-bounce delay-700">
-                        <FaMicrochip className="text-blue-400 text-2xl" />
-                      </div>
-                      <div className="absolute bottom-20 left-10 w-20 h-20 bg-[#0a0d14] border border-white/10 rounded-[2rem] flex items-center justify-center shadow-2xl animate-float delay-1000">
-                        <FaTools className="text-blue-400 text-3xl" />
-                      </div>
+                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Best Seller</p>
+                      <p className="text-green-600 font-black text-sm mt-0.5">⭐ {currentSlide.stats.rating} Rating</p>
                     </motion.div>
 
-                    {/* Decorative Circles */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-[500px] h-[500px] border border-white/5 rounded-full" />
-                      <div className="w-[700px] h-[700px] border border-white/[0.03] rounded-full absolute" />
-                    </div>
+                    {/* Floating delivery badge */}
+                    <motion.div
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: 0.7, type: 'spring' }}
+                      className="absolute bottom-8 left-8 bg-green-500 text-white rounded-2xl px-4 py-3 shadow-lg z-20 flex items-center gap-2"
+                    >
+                      <FaShippingFast size={14} />
+                      <div>
+                        <p className="text-[9px] font-black uppercase tracking-widest opacity-80">Delivery</p>
+                        <p className="font-black text-sm">Same Day</p>
+                      </div>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
             </AnimatePresence>
 
-            {/* Carousel Controls */}
-            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-3 z-20">
+            {/* Slide dots */}
+            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveSlide(i)}
-                  className={`h-1.5 rounded-full transition-all duration-500 ${i === activeSlide ? 'w-10 bg-blue-500' : 'w-3 bg-white/20 hover:bg-white/40'}`}
+                  className={`h-2 rounded-full transition-all duration-400 ${
+                    i === activeSlide ? 'w-8 bg-green-500' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                  }`}
                 />
               ))}
             </div>
+
+            {/* Prev / Next arrows */}
+            {slides.length > 1 && (
+              <>
+                <button
+                  onClick={() => setActiveSlide(prev => (prev - 1 + slides.length) % slides.length)}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all"
+                >
+                  <FaChevronRight size={12} className="rotate-180" />
+                </button>
+                <button
+                  onClick={() => setActiveSlide(prev => (prev + 1) % slides.length)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all"
+                >
+                  <FaChevronRight size={12} />
+                </button>
+              </>
+            )}
           </div>
         </section>
       )}
 
       {/* ── TRUST BADGES ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-24">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { icon: FaShippingFast, label: t('kigaliDelivery') || 'Kigali Delivery', desc: t('freeSameDayDelivery') || 'Free same-day delivery', color: '#0d6efd' },
-            { icon: FaShieldAlt, label: t('qualityAssured') || 'Quality Assured', desc: t('originalProducts100') || '100% original products', color: '#0d6efd' },
-            { icon: FaHeadset, label: t('expertSupport') || 'Expert Support', desc: t('realTechnicalAssistance') || 'Real technical assistance', color: '#0d6efd' },
-            { icon: FaMicrochip, label: t('repairTools') || 'Repair Tools', desc: t('professionalGradeKit') || 'Professional grade kit', color: '#0d6efd' },
+            { icon: FaShippingFast, label: t('kigaliDelivery') || 'Kigali Delivery',   desc: t('freeSameDayDelivery') || 'Free same-day delivery',       color: '#22c55e' },
+            { icon: FaShieldAlt,    label: t('qualityAssured') || 'Quality Assured',   desc: t('originalProducts100') || '100% original products',       color: '#22c55e' },
+            { icon: FaHeadset,      label: t('expertSupport')  || 'Expert Support',    desc: t('realTechnicalAssistance') || 'Real technical assistance', color: '#22c55e' },
+            { icon: FaMicrochip,    label: t('repairTools')    || 'Repair Tools',      desc: t('professionalGradeKit') || 'Professional grade kit',       color: '#22c55e' },
           ].map((item, i) => (
-            <div key={i} className="card-premium flex items-center gap-6 group">
-              <div className="w-14 h-14 rounded-2xl bg-blue-600/10 flex items-center justify-center flex-shrink-0 group-hover:bg-blue-600 transition-all duration-500">
-                <item.icon size={20} className="text-blue-400 group-hover:text-white transition-colors" />
+            <div key={i} className="bg-white border border-gray-200 rounded-xl flex items-center gap-4 p-4 hover:shadow-md transition-all group">
+              <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-500 transition-all duration-300">
+                <item.icon size={18} className="text-green-500 group-hover:text-white transition-colors" />
               </div>
               <div>
-                <p className="font-black text-sm text-white uppercase tracking-tight">{item.label}</p>
-                <p className="text-slate-500 text-xs font-bold mt-1">{item.desc}</p>
+                <p className="font-bold text-sm text-gray-900">{item.label}</p>
+                <p className="text-gray-500 text-xs mt-0.5">{item.desc}</p>
               </div>
             </div>
           ))}
@@ -225,13 +314,13 @@ const Home = () => {
       </section>
 
       {/* ── CATEGORIES ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-24">
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">{t('shopByCategory')}</h2>
-            <p className="text-slate-500 text-sm font-bold mt-1 uppercase tracking-widest">{t('findExactlyWhatYouNeed') || 'Find exactly what you need'}</p>
+      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-1 h-6 bg-green-500 rounded-full" />
+            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{t('shopByCategory')}</h2>
           </div>
-          <Link to="/categories" className="text-blue-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest flex items-center gap-2">
+          <Link to="/categories" className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
             {t('viewAll')} <FaChevronRight size={10} />
           </Link>
         </div>
@@ -239,70 +328,146 @@ const Home = () => {
       </section>
 
       {/* ── TOP DEALS ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-24">
-        <div className="flex items-center justify-between mb-12">
-          <div className="flex items-center gap-6">
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">{t('deals')}</h2>
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2 flex items-center gap-3">
-              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-16">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-1 h-6 bg-green-500 rounded-full" />
+            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{t('deals')}</h2>
+            <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-1 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
               <span className="text-red-500 text-[10px] font-black uppercase tracking-widest">{t('endsIn') || 'Ends in'}: 04h 22m 15s</span>
             </div>
           </div>
-          <Link to="/products?sort=deals" className="text-blue-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest flex items-center gap-2">
+          <Link to="/products?sort=deals" className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
             {t('viewAll')} <FaChevronRight size={10} />
           </Link>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="aspect-[3/4] rounded-3xl bg-white/5 animate-pulse" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-pulse">
+                <div className="h-44 bg-gray-100" />
+                <div className="p-3 space-y-2">
+                  <div className="h-3 bg-gray-100 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-1/2" />
+                  <div className="h-8 bg-gray-100 rounded mt-3" />
+                </div>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {topDeals.length > 0 ? (
               topDeals.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))
             ) : (
-              <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-white/5">
-                <FaFire className="text-slate-700 text-5xl mx-auto mb-4" />
-                <p className="text-slate-500 font-bold uppercase tracking-widest">{t('noDealsAvailable') || 'No flash deals available today'}</p>
+              <div className="col-span-full py-16 text-center bg-white border border-gray-200 rounded-xl">
+                <FaFire className="text-gray-300 text-4xl mx-auto mb-3" />
+                <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">{t('noDealsAvailable') || 'No flash deals available today'}</p>
               </div>
             )}
           </div>
         )}
       </section>
 
-      {/* ── NEW ARRIVALS ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-24">
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">{t('newArrivals')}</h2>
-            <p className="text-slate-500 text-sm font-bold mt-1 uppercase tracking-widest">{t('latestProductsInOurStore') || 'Latest products in our store'}</p>
+      {/* ── DYNAMIC CATEGORY SECTIONS ── */}
+      {categorySections.map((section, idx) => (
+        <div key={section.category._id}>
+          {/* Category Banner (if exists) */}
+          {section.banner && (
+            <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
+              <PromoBanner
+                image={section.banner.bannerImage}
+                tag={section.banner.tag}
+                title={section.banner.title}
+                subtitle={section.banner.subtitle}
+                cta="Shop Now"
+                ctaLink={`/products?category=${section.category.name}`}
+              />
+            </section>
+          )}
+
+          {/* Category Products */}
+          <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-16">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-1 h-6 bg-green-500 rounded-full" />
+                <div className="flex items-center gap-3">
+                  {section.category.image && (
+                    <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
+                      <img src={section.category.image} className="w-full h-full object-cover" alt={section.category.name} />
+                    </div>
+                  )}
+                  <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{section.category.name}</h2>
+                </div>
+              </div>
+              <Link to={`/products?category=${section.category.name}`} className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+                {t('viewAll')} <FaChevronRight size={10} />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              {section.products.map(product => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+          </section>
+        </div>
+      ))}
+
+      {/* ── GENERAL PROMO BANNERS (Banners not assigned to any category) ── */}
+      {promoBanners.filter(b => !b.category).map((banner, idx) => (
+        <section key={banner.id} className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
+          <PromoBanner
+            image={banner.bannerImage}
+            tag={banner.tag}
+            title={banner.title}
+            subtitle={banner.subtitle}
+            cta="Shop Now"
+            ctaLink="/products"
+          />
+        </section>
+      ))}
+
+      {/* ── NEW ARRIVALS (Fallback/Bottom section) ── */}
+      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-16">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="w-1 h-6 bg-green-500 rounded-full" />
+            <div>
+              <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{t('newArrivals')}</h2>
+            </div>
           </div>
-          <Link to="/products?sort=newest" className="text-blue-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest flex items-center gap-2">
+          <Link to="/products?sort=newest" className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
             {t('viewAll')} <FaChevronRight size={10} />
           </Link>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="aspect-[4/5] rounded-[3rem] bg-white/5 animate-pulse" />
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-pulse">
+                <div className="h-44 bg-gray-100" />
+                <div className="p-3 space-y-2">
+                  <div className="h-3 bg-gray-100 rounded w-3/4" />
+                  <div className="h-3 bg-gray-100 rounded w-1/2" />
+                  <div className="h-8 bg-gray-100 rounded mt-3" />
+                </div>
+              </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
             {newArrivals.length > 0 ? (
               newArrivals.map(product => (
                 <ProductCard key={product._id} product={product} />
               ))
             ) : (
-              <div className="col-span-full py-20 text-center glass rounded-[3rem] border border-white/5">
-                <FaBolt className="text-slate-700 text-5xl mx-auto mb-4" />
-                <p className="text-slate-500 font-bold uppercase tracking-widest">{t('noNewArrivals') || 'No new arrivals yet'}</p>
+              <div className="col-span-full py-16 text-center bg-white border border-gray-200 rounded-xl">
+                <FaBolt className="text-gray-300 text-4xl mx-auto mb-3" />
+                <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">{t('noNewArrivals') || 'No new arrivals yet'}</p>
               </div>
             )}
           </div>
@@ -311,26 +476,25 @@ const Home = () => {
 
       {/* ── NEWSLETTER ── */}
       <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-10">
-        <div className="bg-[#0a0d14] border border-white/5 rounded-[3rem] p-12 xl:p-20 relative overflow-hidden flex flex-col items-center text-center">
-          <div className="absolute top-0 left-0 w-full h-full bg-blue-600/5 blur-[120px] rounded-full" />
+        <div className="bg-green-600 rounded-2xl p-10 xl:p-16 relative overflow-hidden flex flex-col items-center text-center">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
           <div className="relative z-10 max-w-2xl">
-            <div className="w-20 h-20 bg-blue-600/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-blue-500/20">
-              <FaEnvelope className="text-blue-400 text-3xl" />
+            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <FaEnvelope className="text-white text-2xl" />
             </div>
-            <h2 className="text-4xl xl:text-5xl font-black text-white mb-6 tracking-tighter uppercase">Join the Elite Club</h2>
-            <p className="text-slate-500 text-lg font-medium mb-10">Subscribe to get exclusive early access to deals, new arrivals, and professional repair guides directly in your inbox.</p>
-            
-            <form className="flex flex-col sm:flex-row items-center gap-4 bg-white/5 p-2 rounded-[2rem] border border-white/10 w-full">
-              <input 
-                type="email" 
-                placeholder="Enter your email address" 
-                className="flex-1 bg-transparent border-none outline-none px-6 py-4 text-white font-medium placeholder:text-slate-600"
+            <h2 className="text-3xl xl:text-4xl font-black text-white mb-4 tracking-tight">Join the Elite Club</h2>
+            <p className="text-green-100 text-base font-medium mb-8">Subscribe to get exclusive early access to deals, new arrivals, and professional repair guides.</p>
+            <form className="flex flex-col sm:flex-row items-center gap-3 bg-white/10 p-2 rounded-xl border border-white/20 w-full max-w-lg mx-auto">
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-white font-medium placeholder:text-green-200 text-sm"
               />
-              <button className="btn-premium w-full sm:w-auto">
-                Subscribe Now
+              <button className="bg-white text-green-600 font-black text-xs uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-green-50 transition-all w-full sm:w-auto">
+                Subscribe
               </button>
             </form>
-            <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest mt-6">No spam, just premium content. Unsubscribe anytime.</p>
+            <p className="text-[10px] text-green-200 font-bold uppercase tracking-widest mt-4">No spam. Unsubscribe anytime.</p>
           </div>
         </div>
       </section>

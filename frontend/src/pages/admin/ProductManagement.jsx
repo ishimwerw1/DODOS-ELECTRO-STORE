@@ -15,11 +15,13 @@ const ProductManagement = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [dbCategories, setDbCategories] = useState([]);
+  const [subcategoryOptions, setSubcategoryOptions] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
     brand: '',
     category: '',
+    subcategory: '',
     compatible: '',
     image: '',
     images: [],
@@ -37,14 +39,23 @@ const ProductManagement = () => {
   const fetchCategories = async () => {
     try {
       const res = await productAPI.getCategories();
-      const catList = Array.isArray(res.data) ? res.data.map(c => c.name) : [];
+      const catList = Array.isArray(res.data) ? res.data : [];
       setDbCategories(catList);
       if (catList.length > 0 && !formData.category) {
-        setFormData(prev => ({ ...prev, category: catList[0] }));
+        const firstCat = catList[0];
+        setFormData(prev => ({ ...prev, category: firstCat.name || firstCat }));
+        setSubcategoryOptions(firstCat.subcategories || []);
       }
     } catch (error) {
       console.error('Failed to load categories');
     }
+  };
+
+  // When category changes, update subcategory options
+  const handleCategoryChange = (catName) => {
+    const cat = dbCategories.find(c => (c.name || c) === catName);
+    setSubcategoryOptions(cat?.subcategories || []);
+    setFormData(prev => ({ ...prev, category: catName, subcategory: '' }));
   };
 
   const fetchProducts = async () => {
@@ -106,11 +117,14 @@ const ProductManagement = () => {
   const handleOpenModal = (product = null) => {
     if (product) {
       setEditingProduct(product);
+      const cat = dbCategories.find(c => (c.name || c) === product.category);
+      setSubcategoryOptions(cat?.subcategories || []);
       setFormData({
         name: product.name,
         price: product.price,
         brand: product.brand,
         category: product.category,
+        subcategory: product.subcategory || '',
         compatible: product.compatible,
         image: product.image,
         images: product.images || [product.image],
@@ -119,11 +133,14 @@ const ProductManagement = () => {
       });
     } else {
       setEditingProduct(null);
+      const firstCat = dbCategories[0];
+      setSubcategoryOptions(firstCat?.subcategories || []);
       setFormData({
         name: '',
         price: '',
         brand: brands[0],
-        category: dbCategories[0] || '',
+        category: firstCat?.name || firstCat || '',
+        subcategory: '',
         compatible: '',
         image: '',
         images: [],
@@ -324,8 +341,15 @@ const ProductManagement = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Category</label>
-                          <select value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} className={`w-full px-5 py-3.5 rounded-2xl text-xs font-bold outline-none border transition-all appearance-none ${theme === 'Dark' ? 'bg-white/5 border-white/5 text-white focus:border-blue-500/50' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500/50'}`} required>
-                            {dbCategories.map(c => <option key={c} value={c}>{c}</option>)}
+                          <select value={formData.category} onChange={(e) => handleCategoryChange(e.target.value)} className={`w-full px-5 py-3.5 rounded-2xl text-xs font-bold outline-none border transition-all appearance-none ${theme === 'Dark' ? 'bg-white/5 border-white/5 text-white focus:border-blue-500/50' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500/50'}`} required>
+                            {dbCategories.map(c => <option key={c.name || c} value={c.name || c}>{c.name || c}</option>)}
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Subcategory</label>
+                          <select value={formData.subcategory} onChange={(e) => setFormData({...formData, subcategory: e.target.value})} className={`w-full px-5 py-3.5 rounded-2xl text-xs font-bold outline-none border transition-all appearance-none ${theme === 'Dark' ? 'bg-white/5 border-white/5 text-white focus:border-blue-500/50' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-blue-500/50'}`}>
+                            <option value="">— None —</option>
+                            {subcategoryOptions.map(s => <option key={s} value={s}>{s}</option>)}
                           </select>
                         </div>
                         <div className="space-y-2">

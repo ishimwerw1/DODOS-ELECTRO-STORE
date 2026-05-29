@@ -142,6 +142,11 @@ export const chatAPI = {
   deleteMessage: (messageId) => api.delete(`/chat/${messageId}`)
 };
 
+// AI APIs
+export const aiAPI = {
+  chat: (message, history) => api.post('/ai/chat', { message, history })
+};
+
 // Admin APIs
 export const reviewAPI = {
   getReviews: () => api.get('/reviews'),
