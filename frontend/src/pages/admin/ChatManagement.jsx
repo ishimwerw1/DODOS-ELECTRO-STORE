@@ -281,7 +281,7 @@ const ChatManagement = () => {
                         </span>
                         {own && !msg.isDeleted && (
                           msg.isRead
-                            ? <FaCheckDouble size={10} className="text-white/80" />
+                            ? <FaCheckDouble size={10} className="text-blue-400" />
                             : <FaCheck size={10} className="text-white/60" />
                         )}
                       </div>

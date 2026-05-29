@@ -11,6 +11,8 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { ChatProvider } from './context/ChatContext';
 import Sidebar from './components/Sidebar';
 import ChatWindow from './components/ChatWindow';
+import DownloadApp from './components/DownloadApp';
+import WhatsAppFloat from './components/WhatsAppFloat';
 
 // Pages
 import Home from './pages/Home';
@@ -85,7 +87,9 @@ function App() {
                 <LocaleProvider>
                   <ChatProvider>
                     <div className="flex flex-col min-h-screen">
-                    <VerificationGuard>
+                      <DownloadApp />
+                      <WhatsAppFloat />
+                      <VerificationGuard>
                       <Routes>
                       {/* Admin Routes */}
                       <Route path="/admin" element={

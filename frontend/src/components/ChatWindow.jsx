@@ -2,9 +2,9 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import {
-  FaTimes, FaPaperPlane, FaWhatsapp, FaUserCircle,
+  FaTimes, FaPaperPlane, FaComments, FaUserCircle,
   FaCheck, FaCheckDouble, FaReply, FaEdit, FaTrash,
-  FaAndroid, FaApple, FaDesktop, FaDownload, FaCheckCircle, FaBox
+  FaCheckCircle, FaBox, FaWhatsapp
 } from 'react-icons/fa';
 import { useChat } from '../context/ChatContext';
 import { useAuth } from '../context/AuthContext';
@@ -97,7 +97,7 @@ const ChatWindow = () => {
 
   // Admins don't see the chat widget — they use ChatManagement
   if (!isLoggedIn || user?.role === 'admin') {
-    return <FloatingActionBar onInstall={handleInstallClick} />;
+    return null;
   }
 
   // Helper: compare sender id (could be string or ObjectId)
@@ -108,8 +108,6 @@ const ChatWindow = () => {
 
   return (
     <>
-      <FloatingActionBar onInstall={handleInstallClick} />
-
       {/* Install modal — cross-browser */}
       <AnimatePresence>
         {showInstallModal && (
@@ -210,7 +208,7 @@ const ChatWindow = () => {
         onClick={() => isOpen ? closeChat() : openChat()}
         className="fixed bottom-6 right-6 w-14 h-14 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-xl flex items-center justify-center z-[110] transition-all active:scale-95 relative"
       >
-        {isOpen ? <FaTimes size={20} /> : <FaWhatsapp size={26} />}
+        {isOpen ? <FaTimes size={20} /> : <FaComments size={26} />}
         {unreadCount > 0 && !isOpen && (
           <>
             <span className="absolute inset-0 rounded-full bg-green-400 animate-ping opacity-40" />
@@ -379,40 +377,6 @@ const ChatWindow = () => {
         )}
       </AnimatePresence>
     </>
-  );
-};
-
-/* ── Floating install/social action bar ── */
-const FloatingActionBar = ({ onInstall }) => {
-  const actions = [
-    { icon: <FaWhatsapp size={18} />, color: 'bg-[#25D366]', label: 'WhatsApp', href: 'https://wa.me/250783211453', external: true },
-    { icon: <FaAndroid size={18} />, color: 'bg-[#3DDC84]', label: 'Android App', href: '#', onClick: onInstall },
-    { icon: <FaApple size={18} />,   color: 'bg-gray-600',   label: 'iOS App',     href: '#', onClick: onInstall },
-    { icon: <FaDesktop size={18} />, color: 'bg-blue-600',   label: 'Desktop App', href: '#', onClick: onInstall },
-  ];
-
-  return (
-    <div className="fixed right-6 bottom-24 flex flex-col gap-3 z-[109]">
-      {actions.map((action, idx) => (
-        <motion.a
-          key={idx}
-          href={action.href}
-          onClick={e => { if (action.onClick) { e.preventDefault(); action.onClick(); } }}
-          target={action.external ? '_blank' : undefined}
-          rel={action.external ? 'noopener noreferrer' : undefined}
-          initial={{ x: 60, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: idx * 0.08 }}
-          className={`w-11 h-11 ${action.color} text-white rounded-xl shadow-lg flex items-center justify-center group relative hover:scale-110 transition-transform active:scale-95`}
-          title={action.label}
-        >
-          {action.icon}
-          <span className="absolute right-14 bg-white border border-gray-200 text-gray-700 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
-            {action.label}
-          </span>
-        </motion.a>
-      ))}
-    </div>
   );
 };
 
