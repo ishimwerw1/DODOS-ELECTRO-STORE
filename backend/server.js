@@ -64,16 +64,7 @@ setTimeout(ensureAdminExists, 2000);
 
 // Security middleware
 app.use(helmet());
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'https://dodos-phones.vercel.app',
-    process.env.CLIENT_URL,
-  ].filter(Boolean),
-  credentials: true,
-}));
+app.use(cors());
 
 // Rate limiting
 const limiter = rateLimit({
