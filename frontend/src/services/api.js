@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://dodos-electro-store.onrender.com/api' : 'http://localhost:5008/api');
+const API_URL = import.meta.env.VITE_API_URL ||
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:5008/api'
+    : 'https://dodos-electro-store.onrender.com/api');
 
 const api = axios.create({
   baseURL: API_URL,
