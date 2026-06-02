@@ -1,14 +1,16 @@
 import axios from 'axios';
 
-// Get API URL from environment or fallback to production Render URL
-const API_URL = import.meta.env.VITE_API_URL || 'https://dodos-electro-store.onrender.com/api';
+// Get API URL from environment or fallback to local development URL
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5008/api';
+
+console.log('API URL being used:', API_URL); // Debugging line for console
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json'
   },
-  withCredentials: true // Set to true to allow cross-origin cookies if needed
+  withCredentials: true 
 });
 
 // Add auth token to requests
