@@ -1,13 +1,14 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL ||  'https://dodos-electro-store.onrender.com/api';
+// Get API URL from environment or fallback to production Render URL
+const API_URL = import.meta.env.VITE_API_URL || 'https://dodos-electro-store.onrender.com/api';
 
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json'
   },
-  withCredentials: false
+  withCredentials: true // Set to true to allow cross-origin cookies if needed
 });
 
 // Add auth token to requests
