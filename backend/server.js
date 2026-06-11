@@ -7,6 +7,8 @@ import connectDB from './config/db.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import User from './models/User.js';
 
+// Restart trigger 8
+
 // Route imports
 import authRoutes from './routes/authRoutes.js';
 import productRoutes from './routes/productRoutes.js';

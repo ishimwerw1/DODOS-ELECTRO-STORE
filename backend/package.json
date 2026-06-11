@@ -9,6 +9,9 @@
     "dev": "nodemon server.js",
     "seed": "node utils/seedData.js"
   },
+  "nodemonConfig": {
+    "ignore": ["test-*.js", "package.json", "package-lock.json", ".env"]
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "bcryptjs": "^2.4.3",

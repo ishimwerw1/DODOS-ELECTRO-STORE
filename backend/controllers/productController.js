@@ -8,10 +8,17 @@ import Notification from '../models/Notification.js';
 // @access  Public
 export const getProducts = async (req, res, next) => {
   try {
-    const { category, brand, compatible, search, minPrice, maxPrice, sort } = req.query;
+    let { category, brand, compatible, search, minPrice, maxPrice, sort } = req.query;
     const filters = [];
 
     if (category) {
+      // Check if category is an ObjectId (24 hex chars)
+      if (category.match(/^[0-9a-fA-F]{24}$/)) {
+        const catDoc = await Category.findById(category);
+        if (catDoc) {
+          category = catDoc.name;
+        }
+      }
       filters.push({ category });
     }
 

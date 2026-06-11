@@ -10,6 +10,7 @@ import { productAPI, categoryAPI, slideAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import CategoriesSection from '../components/CategoriesSection';
 import PromoBanner from '../components/PromoBanner';
+import ReviewsSection from '../components/ReviewsSection';
 import { useLocale } from '../context/LocaleContext';
 
 const Home = () => {
@@ -473,6 +474,9 @@ const Home = () => {
           </div>
         )}
       </section>
+
+      {/* ── REVIEWS SECTION ── */}
+      <ReviewsSection />
 
       {/* ── NEWSLETTER ── */}
       <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-10">

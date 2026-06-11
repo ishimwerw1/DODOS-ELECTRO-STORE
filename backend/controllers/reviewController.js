@@ -12,6 +12,18 @@ export const getReviews = async (req, res, next) => {
   }
 };
 
+// @desc  Get all reviews (admin)
+// @route GET /api/reviews/admin
+// @access Admin
+export const getAllReviews = async (req, res, next) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 });
+    res.json({ success: true, reviews });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // @desc  Submit a new review
 // @route POST /api/reviews
 // @access Public

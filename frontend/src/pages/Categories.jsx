@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaChevronRight, FaSearch, FaThLarge, FaList, FaTag, FaLayerGroup } from 'react-icons/fa';
-import { productAPI } from '../services/api';
+import { categoryAPI } from '../services/api';
 import { toast } from 'react-toastify';
 
 const Categories = () => {
@@ -16,7 +16,7 @@ const Categories = () => {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const res = await productAPI.getCategories();
+      const res = await categoryAPI.getCategories();
       setCategories(res.data || []);
     } catch {
       toast.error('Failed to load categories');
@@ -129,7 +129,7 @@ const Categories = () => {
                   <div className="p-4 flex flex-col justify-between flex-grow">
                     <p className="text-xs text-gray-500 line-clamp-2 mb-3">{cat.description || 'Premium selection of original parts'}</p>
                     <Link
-                      to={`/products?category=${cat.name}`}
+                      to={`/products?category=${cat._id}`}
                       className="w-full py-2.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-xs font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center gap-1.5"
                     >
                       View Products <FaChevronRight size={9} />

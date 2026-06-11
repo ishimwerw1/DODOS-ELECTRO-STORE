@@ -12,7 +12,7 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    const whatsappNumber = (settings?.general?.whatsappNumber || '250788206064').replace(/\+/g, '');
+    const whatsappNumber = (settings?.general?.whatsappNumber || '250783211453').replace(/\+/g, '');
     const text = `*New Contact Form Submission*%0A%0A*Name:* ${form.name}%0A*Email:* ${form.email}%0A*Subject:* ${form.subject}%0A*Message:* ${form.message}`;
     window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
     toast.success('Redirecting to WhatsApp...');
@@ -46,7 +46,7 @@ const Contact = () => {
       icon: FaWhatsapp,
       label: 'WhatsApp',
       value: 'Chat with us',
-      href: `https://wa.me/${(settings?.general?.whatsappNumber || '250788206064').replace(/\+/g, '')}`,
+      href: `https://wa.me/${(settings?.general?.whatsappNumber || '250783211453').replace(/\+/g, '')}`,
       bg: 'bg-green-50', color: 'text-green-500', hoverBg: 'hover:bg-green-500',
       external: true,
     },

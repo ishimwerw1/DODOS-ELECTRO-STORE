@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { productAPI, slideAPI } from '../services/api';
+import { productAPI, slideAPI, categoryAPI } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import PromoBanner from '../components/PromoBanner';
 import {
@@ -40,8 +40,8 @@ const Products = () => {
   useEffect(() => {
     const fetchCats = async () => {
       try {
-        const res = await productAPI.getCategories();
-        setCategories(res.data.filter(c => c.isActive) || []);
+        const res = await categoryAPI.getCategories();
+        setCategories(res.data?.filter(c => c.isActive) || []);
       } catch {}
     };
     const fetchBanner = async () => {
@@ -121,14 +121,14 @@ const Products = () => {
         <div className="space-y-0.5">
           <SideItem label="All Categories" active={filters.category === 'All'} onClick={() => handleFilterChange('category', 'All')} />
           {categories.map(cat => (
-            <SideItem key={cat._id} label={cat.name} active={filters.category === cat.name} onClick={() => handleFilterChange('category', cat.name)} />
+            <SideItem key={cat._id} label={cat.name} active={filters.category === cat._id} onClick={() => handleFilterChange('category', cat._id)} />
           ))}
         </div>
       </SideSection>
 
       {/* Subcategories — shown when a category with subcategories is selected */}
       {(() => {
-        const selectedCat = categories.find(c => c.name === filters.category);
+        const selectedCat = categories.find(c => c._id === filters.category);
         const subs = selectedCat?.subcategories || [];
         if (!subs.length) return null;
         return (

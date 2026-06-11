@@ -203,4 +203,3 @@ const seedData = async () => {
 };
 
 seedData();
-

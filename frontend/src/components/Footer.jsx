@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   FaInstagram, FaWhatsapp, FaMapMarkerAlt, FaPhoneAlt, FaEnvelope,
@@ -7,12 +7,25 @@ import {
 import { FaTiktok } from 'react-icons/fa6';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
-import { subscriberAPI } from '../services/api';
+import { subscriberAPI, categoryAPI } from '../services/api';
 
 const Footer = () => {
   const { settings } = useAuth();
   const [subscribeEmail, setSubscribeEmail] = useState('');
   const [isSubscribing, setIsSubscribing]   = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryAPI.getCategories();
+        setCategories(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleSubscribe = async (e) => {
     e.preventDefault();
@@ -100,11 +113,11 @@ const Footer = () => {
         <div className="lg:col-span-2 space-y-5">
           <h4 className="text-white font-black uppercase text-xs tracking-[0.2em]">Categories</h4>
           <ul className="space-y-3">
-            {['Screens', 'Batteries', 'Back Covers', 'Tools', 'Chargers', 'Cases'].map(l => (
-              <li key={l}>
-                <Link to={`/products?category=${l}`} className="text-gray-400 hover:text-green-400 text-sm font-semibold transition-colors flex items-center gap-2 group">
+            {categories.map(category => (
+              <li key={category._id}>
+                <Link to={`/products?category=${category._id}`} className="text-gray-400 hover:text-green-400 text-sm font-semibold transition-colors flex items-center gap-2 group">
                   <span className="w-1 h-1 rounded-full bg-gray-600 group-hover:bg-green-500 transition-all" />
-                  {l}
+                  {category.name}
                 </Link>
               </li>
             ))}

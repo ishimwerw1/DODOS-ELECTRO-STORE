@@ -1,16 +1,30 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   FaHome, FaBox, FaThLarge, FaTools, FaHistory,
-  FaRegHeart, FaInfoCircle, FaHeadset, FaChevronRight, FaBolt
+  FaRegHeart, FaInfoCircle, FaHeadset, FaChevronRight, FaBolt, FaTags
 } from 'react-icons/fa';
+import { categoryAPI } from '../services/api';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const location = useLocation();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await categoryAPI.getCategories();
+        setCategories(res.data || []);
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const menuItems = [
     { label: 'Home',       path: '/',                  icon: FaHome },
     { label: 'Shop All',   path: '/products',           icon: FaBox },
-    { label: 'Categories', path: '/categories',         icon: FaThLarge },
     { label: 'Services',   path: '/services',           icon: FaTools },
     { label: 'My Orders',  path: '/dashboard/orders',   icon: FaHistory },
     { label: 'Wishlist',   path: '/dashboard/wishlist', icon: FaRegHeart },
@@ -30,13 +44,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       <div className="h-full flex flex-col p-4">
         <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-4 px-3">Navigation</p>
 
-        <div className="space-y-1 flex-grow overflow-y-auto custom-scrollbar">
+        <div className="space-y-1 overflow-y-auto custom-scrollbar">
           {menuItems.map((item) => {
             const active = isActive(item.path);
             return (
               <Link
                 key={item.label}
                 to={item.path}
+                onClick={() => setIsOpen(false)}
                 className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
                   active
                     ? 'bg-green-50 border border-green-200 text-green-700'
@@ -49,6 +64,35 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                     className={active ? 'text-green-600' : 'text-gray-400 group-hover:text-gray-600 transition-colors'}
                   />
                   <span className="text-[13px] font-semibold">{item.label}</span>
+                </div>
+                {active && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
+              </Link>
+            );
+          })}
+
+          <div className="my-4 border-t border-gray-100" />
+
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-3 px-3">Categories</p>
+
+          {categories.map((category) => {
+            const active = location.search.includes(`category=${category._id}`);
+            return (
+              <Link
+                key={category._id}
+                to={`/products?category=${category._id}`}
+                onClick={() => setIsOpen(false)}
+                className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
+                  active
+                    ? 'bg-green-50 border border-green-200 text-green-700'
+                    : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900 border border-transparent'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FaTags
+                    size={16}
+                    className={active ? 'text-green-600' : 'text-gray-400 group-hover:text-gray-600 transition-colors'}
+                  />
+                  <span className="text-[13px] font-semibold">{category.name}</span>
                 </div>
                 {active && <div className="w-1.5 h-1.5 rounded-full bg-green-500" />}
               </Link>
