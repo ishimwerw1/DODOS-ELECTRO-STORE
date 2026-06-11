@@ -30,6 +30,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5008;
 
+// Guard: fail fast if critical env vars are missing
+if (!process.env.JWT_SECRET) {
+  console.error('❌ FATAL: JWT_SECRET is not set. All authenticated requests will fail.');
+  console.error('   Set JWT_SECRET in your Render environment variables.');
+}
+if (!process.env.MONGO_URI) {
+  console.error('❌ FATAL: MONGO_URI is not set.');
+}
+
 // Connect to MongoDB
 connectDB();
 
@@ -72,12 +81,18 @@ const allowedOrigins = [
   'http://localhost:5174',
   'http://localhost:5175',
   'https://dodos-phones.vercel.app',
+  'https://dodos-electro-store.vercel.app',
   process.env.CLIENT_URL,
 ].filter(Boolean);
 
 app.use(
   cors({
-    origin: "https://dodos-electro-store.vercel.app",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, curl, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      callback(new Error(`CORS: origin ${origin} not allowed`));
+    },
     credentials: true,
   })
 );
