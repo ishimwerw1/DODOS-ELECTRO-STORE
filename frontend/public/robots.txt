@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Block admin and user-only pages from indexing
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /orders
+
+Sitemap: https://dodos-electro-store.vercel.app/sitemap.xml
