@@ -34,7 +34,7 @@ const CategoriesSection = () => {
   }
 
   return (
-    <div className="flex gap-6 overflow-x-auto py-4 hide-scrollbar">
+    <div className="flex gap-3 sm:gap-6 overflow-x-auto py-4 hide-scrollbar">
       {categories.map((cat) => {
         const IconComponent = ICON_MAP[cat.icon] || FaMobileAlt;
         return (

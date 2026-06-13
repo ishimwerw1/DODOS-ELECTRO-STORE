@@ -197,7 +197,7 @@ const Products = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pt-6 pb-16">
-      <div className="max-w-[1600px] mx-auto px-4 xl:px-8">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8">
 
         {/* ── TOP BAR ── */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -217,7 +217,7 @@ const Products = () => {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
-                className="bg-white border border-gray-200 rounded-lg py-2.5 pl-9 pr-4 text-sm text-gray-700 outline-none focus:border-green-500 w-56 transition-all"
+                className="bg-white border border-gray-200 rounded-lg py-2.5 pl-9 pr-4 text-sm text-gray-700 outline-none focus:border-green-500 w-full sm:w-56 transition-all"
               />
             </div>
 
@@ -355,7 +355,7 @@ const Products = () => {
             />
             <motion.div
               initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-              className="fixed top-0 left-0 bottom-0 w-72 bg-white z-[110] overflow-y-auto shadow-2xl"
+              className="fixed top-0 left-0 bottom-0 w-[80vw] max-w-72 bg-white z-[110] overflow-y-auto shadow-2xl"
             >
               <div className="flex items-center justify-between p-4 border-b border-gray-200">
                 <h2 className="font-black text-gray-900 uppercase tracking-wide">Filters</h2>

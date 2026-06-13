@@ -100,7 +100,7 @@ const ProductDetail = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pt-6 pb-16">
-      <div className="max-w-[1600px] mx-auto px-4 xl:px-8">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8">
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
@@ -119,7 +119,7 @@ const ProductDetail = () => {
             {/* Main image */}
             <div
               className={`relative bg-white border border-gray-200 rounded-2xl overflow-hidden flex items-center justify-center shadow-sm group ${isZoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
-              style={{ height: '420px' }}
+              style={{ height: 'clamp(260px, 55vw, 420px)' }}
               onMouseMove={handleMouseMove}
               onClick={() => setIsZoomed(!isZoomed)}
             >

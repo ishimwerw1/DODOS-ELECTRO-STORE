@@ -91,7 +91,7 @@ const ForgotPassword = () => {
           </Link>
         </div>
 
-        <div className="bg-[#0a0d14] border border-white/5 rounded-[3rem] p-10 md:p-14 shadow-2xl relative overflow-hidden">
+        <div className="bg-[#0a0d14] border border-white/5 rounded-2xl sm:rounded-[3rem] p-6 sm:p-10 md:p-14 shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 blur-[60px] rounded-full" />
           
           <AnimatePresence mode="wait">

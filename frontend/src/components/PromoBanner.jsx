@@ -23,8 +23,8 @@ const PromoBanner = ({
   return (
     <Link
       to={ctaLink}
-      className="block relative w-full rounded-[2rem] overflow-hidden shadow-2xl group"
-      style={{ height: '450px' }}
+      className="block relative w-full rounded-xl sm:rounded-[2rem] overflow-hidden shadow-2xl group"
+      style={{ height: 'clamp(280px, 50vw, 450px)' }}
     >
       {/* Full-bleed background image */}
       <div className="absolute inset-0 bg-slate-900">
@@ -50,7 +50,7 @@ const PromoBanner = ({
 
       {/* Content Container */}
       <div
-        className={`relative z-10 h-full flex flex-col justify-center px-10 md:px-20 ${
+        className={`relative z-10 h-full flex flex-col justify-center px-5 sm:px-10 md:px-20 ${
           isCenter ? 'items-center text-center' : 'items-start text-left'
         }`}
       >
@@ -62,13 +62,13 @@ const PromoBanner = ({
         >
           {/* Tag pill */}
           {tag && (
-            <div className="inline-flex items-center gap-2 bg-green-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-[0.3em] px-5 py-2.5 rounded-full mb-6 shadow-xl shadow-green-500/30">
+            <div className="inline-flex items-center gap-2 bg-green-500/90 backdrop-blur-md text-white text-[10px] font-black uppercase tracking-[0.3em] px-3 sm:px-5 py-2 sm:py-2.5 rounded-full mb-4 sm:mb-6 shadow-xl shadow-green-500/30">
               <FaTag size={8} /> {tag}
             </div>
           )}
 
           {/* Title */}
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[0.95] tracking-tighter mb-6 drop-shadow-2xl">
+          <h2 className="text-2xl sm:text-4xl md:text-5xl lg:text-7xl font-black text-white leading-[0.95] tracking-tighter mb-6 drop-shadow-2xl">
             {title.split(' ').map((word, i) => (
               <span key={i} className={i % 2 === 1 ? 'text-green-400' : ''}>
                 {word}{' '}
@@ -78,13 +78,13 @@ const PromoBanner = ({
 
           {/* Subtitle */}
           {subtitle && (
-            <p className="text-base md:text-xl text-slate-200/90 mb-10 max-w-xl font-medium leading-relaxed drop-shadow-md">
+            <p className="text-sm sm:text-base md:text-xl text-slate-200/90 mb-6 sm:mb-10 max-w-xl font-medium leading-relaxed drop-shadow-md">
               {subtitle}
             </p>
           )}
 
           {/* CTA button */}
-          <div className="inline-flex items-center gap-4 bg-white text-black font-black text-xs uppercase tracking-[0.2em] px-10 py-5 rounded-2xl transition-all shadow-2xl hover:bg-green-500 hover:text-white group-hover:scale-105 active:scale-95">
+            <div className="inline-flex items-center gap-4 bg-white text-black font-black text-xs uppercase tracking-[0.2em] px-6 sm:px-10 py-3 sm:py-5 rounded-xl sm:rounded-2xl transition-all shadow-2xl hover:bg-green-500 hover:text-white group-hover:scale-105 active:scale-95">
             {cta}
             <FaArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
           </div>

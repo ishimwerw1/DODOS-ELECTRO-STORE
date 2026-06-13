@@ -140,7 +140,7 @@ const Contact = () => {
 
           {/* ── Right: Form ── */}
           <div className="lg:col-span-2">
-            <div className="bg-white border border-gray-200 rounded-xl p-8 h-full">
+            <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-8 h-full">
               <h3 className="text-lg font-black text-gray-900 mb-6">Send us a Message</h3>
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">

@@ -65,7 +65,7 @@ const Cart = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen pt-6 pb-16">
-      <div className="max-w-[1600px] mx-auto px-4 xl:px-8">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8">
 
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
@@ -98,7 +98,7 @@ const Cart = () => {
                   <p className="text-gray-400 text-xs">Select your area for shipping</p>
                 </div>
               </div>
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-wrap">
                 {[
                   { id: 'kigali',  label: 'Kigali (Free)' },
                   { id: 'outside', label: `Outside (+${formatPrice(2000)})` },
@@ -106,7 +106,7 @@ const Cart = () => {
                   <button
                     key={loc.id}
                     onClick={() => setLocation(loc.id)}
-                    className={`px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all border ${
+                    className={`px-3 sm:px-5 py-2 rounded-lg text-xs font-bold uppercase tracking-widest transition-all border ${
                       location === loc.id
                         ? 'bg-green-500 border-green-500 text-white'
                         : 'bg-gray-50 border-gray-200 text-gray-500 hover:border-green-300 hover:text-green-600'

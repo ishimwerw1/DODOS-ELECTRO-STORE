@@ -1,6 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* ─── Custom breakpoints for watch / xs ─── */
+@custom-media --xs (max-width: 359px);
+@custom-media --watch (max-width: 280px);
+
 @theme {
   /* Dodos Brand Blue & Deep Black */
   --color-primary:      #0d6efd;
@@ -244,4 +248,106 @@
       radial-gradient(at 0% 0%, rgba(13, 110, 253, 0.15) 0px, transparent 50%),
       radial-gradient(at 100% 0%, rgba(0, 210, 255, 0.1) 0px, transparent 50%);
   }
+
+  /* ── Responsive hide-scrollbar ── */
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ── Touch-friendly tap highlight ── */
+  .tap-highlight-none { -webkit-tap-highlight-color: transparent; }
+
+  /* ── Safer touch targets (WCAG: 44x44px minimum) ── */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }
+
+/* ─── Keyframe animations ─── */
+@keyframes slideInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@keyframes pulseGreen {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+}
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-3deg); }
+  50%       { transform: rotate(3deg); }
+}
+@keyframes bounceIn {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.05); }
+  70%  { transform: scale(0.9); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-slide-up    { animation: slideInUp 0.4s ease both; }
+.animate-slide-left  { animation: slideInLeft 0.4s ease both; }
+.animate-slide-right { animation: slideInRight 0.4s ease both; }
+.animate-fade-scale  { animation: fadeInScale 0.35s ease both; }
+.animate-shimmer     { animation: shimmer 1.5s infinite linear; background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; }
+.animate-pulse-green { animation: pulseGreen 2s ease infinite; }
+.animate-wiggle      { animation: wiggle 0.4s ease; }
+.animate-bounce-in   { animation: bounceIn 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+
+/* delay helpers */
+.anim-delay-100 { animation-delay: 0.1s; }
+.anim-delay-200 { animation-delay: 0.2s; }
+.anim-delay-300 { animation-delay: 0.3s; }
+.anim-delay-400 { animation-delay: 0.4s; }
+.anim-delay-500 { animation-delay: 0.5s; }
+
+/* ─── Watch / Tiny screen overrides (≤ 280px) ─── */
+@media (max-width: 280px) {
+  html { font-size: 12px; }
+  .watch-stack { flex-direction: column !important; }
+  .watch-hide  { display: none !important; }
+  .watch-full  { width: 100% !important; }
+  .watch-p2    { padding: 8px !important; }
+  .watch-text-xs { font-size: 10px !important; }
+}
+
+/* ─── XS screen overrides (≤ 359px) ─── */
+@media (max-width: 359px) {
+  .xs-stack   { flex-direction: column !important; }
+  .xs-hide    { display: none !important; }
+  .xs-full    { width: 100% !important; }
+  .xs-p3      { padding: 12px !important; }
+  .xs-text-sm { font-size: 12px !important; }
+  .xs-grid-1  { grid-template-columns: 1fr !important; }
+}
+
+/* ─── Mobile swipe card pattern ─── */
+@media (max-width: 639px) {
+  .mobile-scroll-x {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-scroll-x > * {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+

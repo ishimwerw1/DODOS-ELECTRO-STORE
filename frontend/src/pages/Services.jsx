@@ -76,7 +76,7 @@ const Services = () => {
       <section className="bg-gray-900 text-white py-14 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-green-900/20 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mb-4">
             Professional <span className="text-green-400">Repair Services</span>
           </h1>
           <p className="text-gray-400 text-base max-w-2xl mx-auto mb-8">
@@ -149,7 +149,7 @@ const Services = () => {
       <section className="max-w-7xl mx-auto px-4 pb-4">
         <div className="bg-gray-900 rounded-2xl overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            <div className="p-10 lg:p-14">
+            <div className="p-6 sm:p-10 lg:p-14">
               <h2 className="text-3xl font-black text-white mb-8">Why Trust <span className="text-green-400">DODOS?</span></h2>
               <div className="space-y-7">
                 {[

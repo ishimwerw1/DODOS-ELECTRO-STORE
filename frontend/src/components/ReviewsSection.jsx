@@ -43,7 +43,7 @@ const ReviewCard = ({ review }) => {
   });
 
   return (
-    <div className="bg-white/5 rounded-3xl border border-white/10 p-8 flex flex-col gap-6 h-full transition-all duration-500 hover:border-white">
+    <div className="bg-white/5 rounded-2xl sm:rounded-3xl border border-white/10 p-4 sm:p-8 flex flex-col gap-4 sm:gap-6 h-full transition-all duration-500 hover:border-white">
       {/* Quote icon */}
       <FaQuoteLeft className="text-white/10 text-4xl flex-shrink-0" />
 
@@ -243,14 +243,14 @@ const ReviewsSection = () => {
   const prev = () => setPage((p) => (p - 1 + totalPages) % totalPages);
 
   return (
-    <section className="bg-black py-24 border-t border-white/5">
+    <section className="bg-black py-12 sm:py-24 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4">
         
         {/* Section header */}
         <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
           <div>
             <span className="text-white/40 text-[10px] font-bold uppercase tracking-[0.3em] mb-3 block">Testimonials</span>
-            <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white uppercase tracking-tighter">
               Client <span className="text-gray-500">Feedback</span>
             </h2>
           </div>
@@ -264,7 +264,7 @@ const ReviewsSection = () => {
 
         {/* Rating summary */}
         {reviews.length > 0 && (
-          <div className="bg-white/5 rounded-3xl border border-white/10 p-8 mb-12 flex flex-col md:flex-row gap-12 items-center">
+          <div className="bg-white/5 rounded-2xl sm:rounded-3xl border border-white/10 p-4 sm:p-8 mb-12 flex flex-col md:flex-row gap-6 sm:gap-12 items-center">
             <div className="text-center flex-shrink-0">
               <p className="text-7xl font-black text-white tracking-tighter mb-2">{avgRating}</p>
               <Stars rating={Math.round(parseFloat(avgRating))} size={20} />

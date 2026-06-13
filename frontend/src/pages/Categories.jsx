@@ -60,7 +60,7 @@ const Categories = () => {
                 placeholder="Search categories..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="bg-gray-50 border border-gray-200 rounded-lg py-2.5 pl-9 pr-4 text-sm text-gray-700 outline-none focus:border-green-500 w-56 transition-all"
+                className="bg-gray-50 border border-gray-200 rounded-lg py-2.5 pl-9 pr-4 text-sm text-gray-700 outline-none focus:border-green-500 w-full sm:w-56 transition-all"
               />
             </div>
             <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
@@ -107,7 +107,7 @@ const Categories = () => {
                   className={`group bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-lg hover:border-green-200 transition-all duration-300 flex ${viewMode === 'grid' ? 'flex-col' : 'flex-row h-36'}`}
                 >
                   {/* Image */}
-                  <div className={`relative overflow-hidden bg-gray-50 ${viewMode === 'grid' ? 'h-40 w-full' : 'w-48 h-full flex-shrink-0'}`}>
+                  <div className={`relative overflow-hidden bg-gray-50 ${viewMode === 'grid' ? 'h-40 w-full' : 'w-28 sm:w-48 h-full flex-shrink-0'}`}>
                     <img
                       src={cat.image || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80'}
                       alt={cat.name}

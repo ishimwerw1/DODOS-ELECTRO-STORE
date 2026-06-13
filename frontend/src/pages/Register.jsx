@@ -185,7 +185,7 @@ const Register = () => {
       <motion.div
         initial={{ x: 60, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
-        className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8 bg-white overflow-y-auto"
+        className="w-full lg:w-1/2 flex flex-col justify-center items-center p-4 sm:p-8 bg-white overflow-y-auto"
       >
         <div className="w-full max-w-md my-8">
           <div className="mb-7">

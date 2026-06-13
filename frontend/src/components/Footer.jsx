@@ -45,7 +45,7 @@ const Footer = () => {
     <footer className="bg-gray-900 text-white pt-14 pb-8 mt-auto overflow-hidden">
 
       {/* ── Trust badges ── */}
-      <div className="max-w-[1600px] mx-auto px-4 xl:px-8 grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         {[
           { icon: FaShippingFast, title: 'Express Delivery',  desc: 'Across Rwanda' },
           { icon: FaShieldAlt,    title: 'Local Warranty',    desc: '1 Year official support' },
@@ -65,7 +65,7 @@ const Footer = () => {
       </div>
 
       {/* ── Main columns ── */}
-      <div className="max-w-[1600px] mx-auto px-4 xl:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-12 border-t border-white/10 pt-12">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 mb-12 border-t border-white/10 pt-12">
 
         {/* Brand */}
         <div className="lg:col-span-4 space-y-6">
@@ -156,7 +156,7 @@ const Footer = () => {
       </div>
 
       {/* ── Bottom bar ── */}
-      <div className="max-w-[1600px] mx-auto px-4 xl:px-8 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-gray-600 text-[10px] font-semibold uppercase tracking-[0.3em]">
           © {new Date().getFullYear()} {storeName}. All rights reserved.
         </p>

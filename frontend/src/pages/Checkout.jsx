@@ -172,7 +172,7 @@ const Checkout = () => {
       </AnimatePresence>
 
       <div className="bg-gray-50 min-h-screen pt-6 pb-16">
-        <div className="max-w-[1600px] mx-auto px-4 xl:px-8">
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8">
 
           {/* Breadcrumb */}
           <nav className="flex items-center gap-2 text-xs font-semibold text-gray-400 uppercase tracking-widest mb-6">
@@ -206,7 +206,7 @@ const Checkout = () => {
                     <button
                       key={zone.id} type="button"
                       onClick={() => { setLocation(zone.id); setForm(p => ({ ...p, district: zone.id === 'kigali' ? 'Kigali' : '' })); }}
-                      className={`flex-1 min-w-[160px] flex flex-col items-start p-4 rounded-xl border-2 transition-all ${location === zone.id ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-white hover:border-green-200'}`}
+                      className={`flex-1 min-w-[120px] sm:min-w-[160px] flex flex-col items-start p-3 sm:p-4 rounded-xl border-2 transition-all ${location === zone.id ? 'border-green-500 bg-green-50' : 'border-gray-200 bg-white hover:border-green-200'}`}
                     >
                       <div className="flex items-center justify-between w-full mb-1">
                         <span className="font-bold text-gray-800 text-sm">{zone.label}</span>

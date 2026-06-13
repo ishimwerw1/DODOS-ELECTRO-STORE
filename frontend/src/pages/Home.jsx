@@ -97,8 +97,8 @@ const Home = () => {
       
       {/* ── HERO SLIDESHOW ── */}
       {slides.length > 0 && (
-        <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-10">
-          <div className="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm" style={{ minHeight: '420px' }}>
+        <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-8 sm:mb-10">
+          <div className="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm" style={{ minHeight: 'clamp(260px, 55vw, 480px)' }}>
 
             <AnimatePresence mode="wait">
               <motion.div
@@ -109,24 +109,24 @@ const Home = () => {
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="absolute inset-0"
               >
-                <div className="grid lg:grid-cols-2 h-full min-h-[420px]">
+                <div className="grid lg:grid-cols-2 h-full" style={{ minHeight: 'clamp(260px, 55vw, 480px)' }}>
 
                   {/* ── LEFT: text ── */}
-                  <div className="flex flex-col justify-center px-10 py-12 xl:px-16 relative z-10">
+                  <div className="flex flex-col justify-center px-5 sm:px-8 py-8 xl:px-16 relative z-10">
                     {/* Badge */}
                     <motion.div
                       initial={{ y: 12, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.15 }}
-                      className="flex items-center gap-3 mb-5"
+                      className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-5"
                     >
-                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-200">
+                      <span className="bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-green-200">
                         {currentSlide.tag}
                       </span>
                       <div className="flex items-center gap-1">
-                        <FaStar size={11} className="text-yellow-400" />
+                        <FaStar size={10} className="text-yellow-400" />
                         <span className="text-gray-700 text-xs font-black">{currentSlide.stats.rating}</span>
-                        <span className="text-gray-400 text-xs">({currentSlide.stats.reviews} reviews)</span>
+                        <span className="text-gray-400 text-[10px] hidden sm:inline">({currentSlide.stats.reviews} reviews)</span>
                       </div>
                     </motion.div>
 
@@ -135,7 +135,7 @@ const Home = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.25 }}
-                      className="text-4xl xl:text-5xl font-black text-gray-900 leading-tight tracking-tight mb-4"
+                      className="text-2xl sm:text-3xl xl:text-5xl font-black text-gray-900 leading-tight tracking-tight mb-3 sm:mb-4"
                     >
                       {currentSlide.title}
                     </motion.h1>
@@ -145,7 +145,7 @@ const Home = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.35 }}
-                      className="text-gray-500 text-base mb-8 max-w-md leading-relaxed"
+                      className="text-gray-500 text-sm mb-5 sm:mb-8 max-w-md leading-relaxed line-clamp-2 sm:line-clamp-none"
                     >
                       {currentSlide.subtitle}
                     </motion.p>
@@ -155,19 +155,19 @@ const Home = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.45 }}
-                      className="flex items-center gap-4 flex-wrap"
+                      className="flex items-center gap-2 sm:gap-4 flex-wrap"
                     >
                       <Link
                         to="/products"
-                        className="bg-green-500 hover:bg-green-600 text-white font-black px-7 py-3.5 rounded-xl text-sm flex items-center gap-2 transition-all shadow-sm shadow-green-500/20 group"
+                        className="bg-green-500 hover:bg-green-600 active:scale-95 text-white font-black px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow-sm shadow-green-500/20 group"
                       >
-                        Shop Now <FaArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
+                        Shop Now <FaArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
                       </Link>
                       <Link
                         to="/categories"
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-7 py-3.5 rounded-xl text-sm flex items-center gap-2 transition-all border border-gray-200"
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all border border-gray-200"
                       >
-                        Explore Categories
+                        Explore
                       </Link>
                     </motion.div>
 
@@ -176,16 +176,16 @@ const Home = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.6 }}
-                      className="mt-10 pt-6 border-t border-gray-100 grid grid-cols-3 gap-6"
+                      className="mt-6 sm:mt-10 pt-4 sm:pt-6 border-t border-gray-100 grid grid-cols-3 gap-3 sm:gap-6"
                     >
                       {[
-                        { value: '100%', label: t('genuineParts') || 'Genuine Parts' },
-                        { value: '24h',  label: t('expressDelivery') || 'Express Delivery' },
-                        { value: '1yr',  label: t('localWarranty') || 'Local Warranty' },
+                        { value: '100%', label: 'Genuine' },
+                        { value: '24h',  label: 'Delivery' },
+                        { value: '1yr',  label: 'Warranty' },
                       ].map((s, i) => (
                         <div key={i}>
-                          <p className="text-green-600 font-black text-xl">{s.value}</p>
-                          <p className="text-gray-400 text-[10px] font-semibold uppercase tracking-widest mt-0.5">{s.label}</p>
+                          <p className="text-green-600 font-black text-base sm:text-xl">{s.value}</p>
+                          <p className="text-gray-400 text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest mt-0.5">{s.label}</p>
                         </div>
                       ))}
                     </motion.div>
@@ -293,80 +293,95 @@ const Home = () => {
       )}
 
       {/* ── TRUST BADGES ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-8 sm:mb-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
           {[
-            { icon: FaShippingFast, label: t('kigaliDelivery') || 'Kigali Delivery',   desc: t('freeSameDayDelivery') || 'Free same-day delivery',       color: '#22c55e' },
-            { icon: FaShieldAlt,    label: t('qualityAssured') || 'Quality Assured',   desc: t('originalProducts100') || '100% original products',       color: '#22c55e' },
-            { icon: FaHeadset,      label: t('expertSupport')  || 'Expert Support',    desc: t('realTechnicalAssistance') || 'Real technical assistance', color: '#22c55e' },
-            { icon: FaMicrochip,    label: t('repairTools')    || 'Repair Tools',      desc: t('professionalGradeKit') || 'Professional grade kit',       color: '#22c55e' },
+            { icon: FaShippingFast, label: 'Kigali Delivery',  desc: 'Free same-day delivery',      color: '#22c55e' },
+            { icon: FaShieldAlt,    label: 'Quality Assured',  desc: '100% original products',      color: '#22c55e' },
+            { icon: FaHeadset,      label: 'Expert Support',   desc: 'Real technical assistance',   color: '#22c55e' },
+            { icon: FaMicrochip,    label: 'Repair Tools',     desc: 'Professional grade kit',      color: '#22c55e' },
           ].map((item, i) => (
-            <div key={i} className="bg-white border border-gray-200 rounded-xl flex items-center gap-4 p-4 hover:shadow-md transition-all group">
-              <div className="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-500 transition-all duration-300">
-                <item.icon size={18} className="text-green-500 group-hover:text-white transition-colors" />
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.07 }}
+              className="bg-white border border-gray-200 rounded-xl flex items-center gap-2 sm:gap-4 p-3 sm:p-4 hover:shadow-md transition-all group"
+            >
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0 group-hover:bg-green-500 transition-all duration-300">
+                <item.icon size={16} className="text-green-500 group-hover:text-white transition-colors" />
               </div>
-              <div>
-                <p className="font-bold text-sm text-gray-900">{item.label}</p>
-                <p className="text-gray-500 text-xs mt-0.5">{item.desc}</p>
+              <div className="min-w-0">
+                <p className="font-bold text-xs sm:text-sm text-gray-900 truncate">{item.label}</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs mt-0.5 truncate">{item.desc}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* ── CATEGORIES ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-1 h-6 bg-green-500 rounded-full" />
-            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{t('shopByCategory')}</h2>
+      <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-8 sm:mb-12">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-1 h-5 sm:h-6 bg-green-500 rounded-full" />
+            <h2 className="text-base sm:text-xl font-black text-gray-900 uppercase tracking-tight">{t('shopByCategory')}</h2>
           </div>
-          <Link to="/categories" className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-            {t('viewAll')} <FaChevronRight size={10} />
+          <Link to="/categories" className="text-green-600 hover:text-green-700 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+            {t('viewAll')} <FaChevronRight size={9} />
           </Link>
         </div>
         <CategoriesSection />
       </section>
 
       {/* ── TOP DEALS ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-16">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-1 h-6 bg-green-500 rounded-full" />
-            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{t('deals')}</h2>
-            <div className="bg-red-50 border border-red-200 rounded-lg px-3 py-1 flex items-center gap-2">
+      <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-12 sm:mb-16">
+        <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <div className="w-1 h-5 sm:h-6 bg-green-500 rounded-full" />
+            <h2 className="text-base sm:text-xl font-black text-gray-900 uppercase tracking-tight">{t('deals')}</h2>
+            <div className="bg-red-50 border border-red-200 rounded-lg px-2 sm:px-3 py-1 flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-red-500 text-[10px] font-black uppercase tracking-widest">{t('endsIn') || 'Ends in'}: 04h 22m 15s</span>
+              <span className="text-red-500 text-[9px] sm:text-[10px] font-black uppercase tracking-widest">{t('endsIn') || 'Ends in'}: 04h 22m 15s</span>
             </div>
           </div>
-          <Link to="/products?sort=deals" className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-            {t('viewAll')} <FaChevronRight size={10} />
+          <Link to="/products?sort=deals" className="text-green-600 hover:text-green-700 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+            {t('viewAll')} <FaChevronRight size={9} />
           </Link>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-pulse">
-                <div className="h-44 bg-gray-100" />
+              <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-shimmer">
+                <div className="aspect-[4/3] bg-gray-100" />
                 <div className="p-3 space-y-2">
-                  <div className="h-3 bg-gray-100 rounded w-3/4" />
-                  <div className="h-3 bg-gray-100 rounded w-1/2" />
-                  <div className="h-8 bg-gray-100 rounded mt-3" />
+                  <div className="h-2.5 bg-gray-100 rounded w-3/4" />
+                  <div className="h-2.5 bg-gray-100 rounded w-1/2" />
+                  <div className="h-7 bg-gray-100 rounded mt-3" />
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
             {topDeals.length > 0 ? (
-              topDeals.map(product => (
-                <ProductCard key={product._id} product={product} />
+              topDeals.map((product, i) => (
+                <motion.div
+                  key={product._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
               ))
             ) : (
-              <div className="col-span-full py-16 text-center bg-white border border-gray-200 rounded-xl">
-                <FaFire className="text-gray-300 text-4xl mx-auto mb-3" />
-                <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">{t('noDealsAvailable') || 'No flash deals available today'}</p>
+              <div className="col-span-full py-12 text-center bg-white border border-gray-200 rounded-xl">
+                <FaFire className="text-gray-300 text-3xl mx-auto mb-3" />
+                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">{t('noDealsAvailable') || 'No flash deals today'}</p>
               </div>
             )}
           </div>
@@ -378,7 +393,7 @@ const Home = () => {
         <div key={section.category._id}>
           {/* Category Banner (if exists) */}
           {section.banner && (
-            <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
+            <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-12">
               <PromoBanner
                 image={section.banner.bannerImage}
                 tag={section.banner.tag}
@@ -391,7 +406,7 @@ const Home = () => {
           )}
 
           {/* Category Products */}
-          <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-16">
+          <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-16">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
                 <div className="w-1 h-6 bg-green-500 rounded-full" />
@@ -420,7 +435,7 @@ const Home = () => {
 
       {/* ── GENERAL PROMO BANNERS (Banners not assigned to any category) ── */}
       {promoBanners.filter(b => !b.category).map((banner, idx) => (
-        <section key={banner.id} className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-12">
+        <section key={banner.id} className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-12">
           <PromoBanner
             image={banner.bannerImage}
             tag={banner.tag}
@@ -433,42 +448,48 @@ const Home = () => {
       ))}
 
       {/* ── NEW ARRIVALS (Fallback/Bottom section) ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-16">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-4">
-            <div className="w-1 h-6 bg-green-500 rounded-full" />
-            <div>
-              <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{t('newArrivals')}</h2>
-            </div>
+      <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-12 sm:mb-16">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <div className="w-1 h-5 sm:h-6 bg-green-500 rounded-full" />
+            <h2 className="text-base sm:text-xl font-black text-gray-900 uppercase tracking-tight">{t('newArrivals')}</h2>
           </div>
-          <Link to="/products?sort=newest" className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-            {t('viewAll')} <FaChevronRight size={10} />
+          <Link to="/products?sort=newest" className="text-green-600 hover:text-green-700 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+            {t('viewAll')} <FaChevronRight size={9} />
           </Link>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-pulse">
-                <div className="h-44 bg-gray-100" />
+              <div key={i} className="bg-white border border-gray-200 rounded-xl overflow-hidden animate-shimmer">
+                <div className="aspect-[4/3] bg-gray-100" />
                 <div className="p-3 space-y-2">
-                  <div className="h-3 bg-gray-100 rounded w-3/4" />
-                  <div className="h-3 bg-gray-100 rounded w-1/2" />
-                  <div className="h-8 bg-gray-100 rounded mt-3" />
+                  <div className="h-2.5 bg-gray-100 rounded w-3/4" />
+                  <div className="h-2.5 bg-gray-100 rounded w-1/2" />
+                  <div className="h-7 bg-gray-100 rounded mt-3" />
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
             {newArrivals.length > 0 ? (
-              newArrivals.map(product => (
-                <ProductCard key={product._id} product={product} />
+              newArrivals.map((product, i) => (
+                <motion.div
+                  key={product._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.06 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
               ))
             ) : (
-              <div className="col-span-full py-16 text-center bg-white border border-gray-200 rounded-xl">
-                <FaBolt className="text-gray-300 text-4xl mx-auto mb-3" />
-                <p className="text-gray-400 font-bold uppercase tracking-widest text-sm">{t('noNewArrivals') || 'No new arrivals yet'}</p>
+              <div className="col-span-full py-12 text-center bg-white border border-gray-200 rounded-xl">
+                <FaBolt className="text-gray-300 text-3xl mx-auto mb-3" />
+                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">{t('noNewArrivals') || 'No new arrivals yet'}</p>
               </div>
             )}
           </div>
@@ -479,15 +500,15 @@ const Home = () => {
       <ReviewsSection />
 
       {/* ── NEWSLETTER ── */}
-      <section className="max-w-[1600px] mx-auto px-4 xl:px-8 mb-10">
-        <div className="bg-green-600 rounded-2xl p-10 xl:p-16 relative overflow-hidden flex flex-col items-center text-center">
+      <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-10">
+        <div className="bg-green-600 rounded-2xl p-6 sm:p-10 xl:p-16 relative overflow-hidden flex flex-col items-center text-center">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
           <div className="relative z-10 max-w-2xl">
-            <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <FaEnvelope className="text-white text-2xl" />
+            <div className="w-12 sm:w-16 h-12 sm:h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+              <FaEnvelope className="text-white text-xl sm:text-2xl" />
             </div>
-            <h2 className="text-3xl xl:text-4xl font-black text-white mb-4 tracking-tight">Join the Elite Club</h2>
-            <p className="text-green-100 text-base font-medium mb-8">Subscribe to get exclusive early access to deals, new arrivals, and professional repair guides.</p>
+            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-white mb-4 tracking-tight">Join the Elite Club</h2>
+            <p className="text-green-100 text-sm sm:text-base font-medium mb-6 sm:mb-8">Subscribe to get exclusive early access to deals, new arrivals, and professional repair guides.</p>
             <form className="flex flex-col sm:flex-row items-center gap-3 bg-white/10 p-2 rounded-xl border border-white/20 w-full max-w-lg mx-auto">
               <input
                 type="email"

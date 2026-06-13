@@ -62,9 +62,10 @@ const ShopLayout = () => {
   return (
     <div className="flex flex-col min-h-screen bg-bg-main">
       <Navbar />
-      <div className="flex-1 flex pt-[158px] md:pt-[158px]">
+      {/* pt-[110px] for mobile (no nav strip), pt-[158px] for lg (TopHeader+bar+navstrip) */}
+      <div className="flex-1 flex pt-[110px] lg:pt-[158px]">
         <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-        <main className="flex-1 transition-all duration-500 lg:pl-[280px] flex flex-col">
+        <main className="flex-1 transition-all duration-500 lg:pl-[260px] flex flex-col min-w-0">
           <div className="flex-1">
             <Outlet />
           </div>
