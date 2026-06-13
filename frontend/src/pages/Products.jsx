@@ -265,7 +265,7 @@ const Products = () => {
         <div className="flex gap-6">
           {/* ── SIDEBAR ── */}
           <aside className="hidden lg:block w-56 shrink-0">
-            <div className="sticky top-[180px]">
+            <div className="sticky top-[172px]">
               <Sidebar />
             </div>
           </aside>

@@ -34,24 +34,23 @@ const CategoriesSection = () => {
   }
 
   return (
-    <div className="flex gap-3 sm:gap-6 overflow-x-auto py-4 hide-scrollbar">
+    <div className="flex gap-3 sm:gap-6 overflow-x-auto py-3 sm:py-4 hide-scrollbar">
       {categories.map((cat) => {
         const IconComponent = ICON_MAP[cat.icon] || FaMobileAlt;
         return (
           <Link
             key={cat._id}
             to={`/products?category=${cat.name}`}
-            className="flex-shrink-0 flex flex-col items-center gap-3 group w-24"
+            className="flex-shrink-0 flex flex-col items-center gap-2 sm:gap-3 group w-16 sm:w-24"
           >
-            {/* Circle image */}
-            <div className="w-20 h-20 rounded-full bg-gray-100 border-2 border-gray-200 group-hover:border-green-400 overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-md group-hover:shadow-green-500/20">
+            <div className="w-14 h-14 sm:w-20 sm:h-20 rounded-full bg-gray-100 border-2 border-gray-200 group-hover:border-green-400 overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:shadow-md group-hover:shadow-green-500/20">
               {cat.image ? (
-                <img src={cat.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={cat.name} />
+                <img src={cat.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt={cat.name} loading="lazy" />
               ) : (
-                <IconComponent size={28} className="text-gray-400 group-hover:text-green-500 transition-colors" />
+                <IconComponent size={22} className="text-gray-400 group-hover:text-green-500 transition-colors" />
               )}
             </div>
-            <span className="text-xs font-semibold text-gray-600 group-hover:text-green-600 text-center line-clamp-2 leading-tight transition-colors">
+            <span className="text-[10px] sm:text-xs font-semibold text-gray-600 group-hover:text-green-600 text-center line-clamp-2 leading-tight transition-colors w-full">
               {cat.name}
             </span>
           </Link>

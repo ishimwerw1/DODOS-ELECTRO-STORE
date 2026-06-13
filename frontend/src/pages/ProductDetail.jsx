@@ -200,14 +200,14 @@ const ProductDetail = () => {
             </p>
 
             {/* Stars */}
-            <div className="flex items-center gap-3 mb-5">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5">
               <div className="flex items-center gap-0.5">
                 {[...Array(5)].map((_, i) => (
-                  <FaStar key={i} size={14} className={i < Math.floor(product.rating || 5) ? 'text-yellow-400' : 'text-gray-200'} />
+                  <FaStar key={i} size={13} className={i < Math.floor(product.rating || 5) ? 'text-yellow-400' : 'text-gray-200'} />
                 ))}
               </div>
               <span className="text-sm font-black text-gray-800">{product.rating || 5.0}</span>
-              <span className="text-xs text-gray-400">({product.reviewCount || 0} reviews)</span>
+              <span className="text-xs text-gray-400">({product.reviewCount || 0})</span>
               <span className="text-xs font-semibold text-green-600 flex items-center gap-1">
                 <FaCheckCircle size={10} /> In Stock ({product.stock || 0} left)
               </span>

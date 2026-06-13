@@ -391,9 +391,8 @@ const Home = () => {
       {/* ── DYNAMIC CATEGORY SECTIONS ── */}
       {categorySections.map((section, idx) => (
         <div key={section.category._id}>
-          {/* Category Banner (if exists) */}
           {section.banner && (
-            <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-12">
+            <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-8 sm:mb-12">
               <PromoBanner
                 image={section.banner.bannerImage}
                 tag={section.banner.tag}
@@ -405,28 +404,34 @@ const Home = () => {
             </section>
           )}
 
-          {/* Category Products */}
-          <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-16">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-4">
-                <div className="w-1 h-6 bg-green-500 rounded-full" />
-                <div className="flex items-center gap-3">
+          <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-10 sm:mb-16">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-1 h-5 sm:h-6 bg-green-500 rounded-full" />
+                <div className="flex items-center gap-2 sm:gap-3">
                   {section.category.image && (
-                    <div className="w-10 h-10 rounded-full overflow-hidden border border-gray-200">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden border border-gray-200 flex-shrink-0">
                       <img src={section.category.image} className="w-full h-full object-cover" alt={section.category.name} />
                     </div>
                   )}
-                  <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">{section.category.name}</h2>
+                  <h2 className="text-base sm:text-xl font-black text-gray-900 uppercase tracking-tight">{section.category.name}</h2>
                 </div>
               </div>
-              <Link to={`/products?category=${section.category.name}`} className="text-green-600 hover:text-green-700 transition-colors text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-                {t('viewAll')} <FaChevronRight size={10} />
+              <Link to={`/products?category=${section.category.name}`} className="text-green-600 hover:text-green-700 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-widest flex items-center gap-1">
+                {t('viewAll')} <FaChevronRight size={9} />
               </Link>
             </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-              {section.products.map(product => (
-                <ProductCard key={product._id} product={product} />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
+              {section.products.map((product, i) => (
+                <motion.div
+                  key={product._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                >
+                  <ProductCard product={product} />
+                </motion.div>
               ))}
             </div>
           </section>

@@ -18,11 +18,8 @@ const TopHeader = () => {
   const currentCur  = CURRENCIES.find(c => c.code === currency) || CURRENCIES[0];
 
   return (
-    <div className="bg-gray-900 py-2 border-b border-gray-800 w-full">
-      <div
-        className="w-full flex items-center justify-between"
-        style={{ paddingLeft: '0.5cm', paddingRight: '0.5cm' }}
-      >
+    <div className="bg-gray-900 py-1.5 sm:py-2 border-b border-gray-800 w-full overflow-x-hidden">
+      <div className="w-full flex items-center justify-between px-3 sm:px-4 xl:px-8">
         {/* ── LEFT: Social icons + follow text ── */}
         <div className="flex items-center gap-3">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-widest hidden sm:block">
