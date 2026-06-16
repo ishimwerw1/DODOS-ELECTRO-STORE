@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
-const GOOGLE_CLIENT_ID = '784340057887-l9ctgt0om79shh85n767nerud9poa7ks.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '784340057887-l9ctgt0om79shh85n767nerud9poa7ks.apps.googleusercontent.com'
 
 // Unregister any existing service workers to prevent network interference in development
 if ('serviceWorker' in navigator) {
