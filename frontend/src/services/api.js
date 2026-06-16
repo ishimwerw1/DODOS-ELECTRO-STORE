@@ -5,7 +5,7 @@ const API_URL =
   import.meta.env.VITE_API_URL ||
   'https://dodos-electro-store.onrender.com/api';
 
-console.log('API URL being used:', API_URL); // Debugging line for console
+
 
 const api = axios.create({
   baseURL: API_URL,

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dodos-electro-store-v2';
+const CACHE_NAME = 'dodos-electro-store-v3';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -31,8 +31,11 @@ self.addEventListener('fetch', event => {
   if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') return;
   if (url.pathname.startsWith('/src/')) return;
 
-  // Network-first for index.html so new deploys are picked up immediately
-  if (url.pathname === '/' || url.pathname === '/index.html') {
+  // API requests — network only, don't cache
+  if (url.pathname.startsWith('/api/')) return;
+
+  // Navigation requests (SPA routes like /login, /forgot-password, etc.)
+  if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
         .then(response => {
@@ -40,15 +43,14 @@ self.addEventListener('fetch', event => {
           caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
           return response;
         })
-        .catch(() => caches.match(event.request))
+        .catch(() => caches.match('/index.html'))
     );
     return;
   }
 
-  // Cache-first for assets
+  // Static assets — cache-first
   event.respondWith(
     caches.match(event.request)
-      .then(response => response || fetch(event.request))
-      .catch(() => fetch(event.request))
+      .then(response => response || fetch(event.request).catch(() => caches.match('/index.html')))
   );
 });
