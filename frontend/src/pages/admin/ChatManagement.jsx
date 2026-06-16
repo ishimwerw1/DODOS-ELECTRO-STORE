@@ -32,14 +32,6 @@ const ChatManagement = () => {
     return () => clearInterval(id);
   }, []);
 
-  // ── Fetch messages every 5s when a contact is selected ──
-  useEffect(() => {
-    if (!activeContact) return;
-    fetchMessages(activeContact._id);
-    const id = setInterval(() => fetchMessages(activeContact._id), 5000);
-    return () => clearInterval(id);
-  }, [activeContact]);
-
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -57,14 +49,26 @@ const ChatManagement = () => {
     }
   };
 
-  const fetchMessages = async (contactId) => {
+  const fetchMessages = async (contactId, isGuest) => {
     try {
-      const res = await chatAPI.getConversation(contactId);
-      setMessages(res.data.messages || []);
+      if (isGuest) {
+        const res = await chatAPI.getGuestConversation(contactId);
+        setMessages(res.data.messages || []);
+      } else {
+        const res = await chatAPI.getConversation(contactId);
+        setMessages(res.data.messages || []);
+      }
     } catch (err) {
       console.error('Failed to fetch messages:', err);
     }
   };
+
+  useEffect(() => {
+    if (!activeContact) return;
+    fetchMessages(activeContact._id, activeContact.isGuest);
+    const id = setInterval(() => fetchMessages(activeContact._id, activeContact.isGuest), 5000);
+    return () => clearInterval(id);
+  }, [activeContact]);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -75,6 +79,15 @@ const ChatManagement = () => {
         setMessages(prev => prev.map(m => m._id === editingMsg._id ? res.data.message : m));
         setEditingMsg(null);
         setInputText('');
+      } else if (activeContact.isGuest) {
+        const res = await chatAPI.sendGuestMessage({
+          guestId: activeContact._id,
+          text: inputText.trim(),
+        });
+        setMessages(prev => [...prev, res.data.message]);
+        setInputText('');
+        setReplyingTo(null);
+        fetchConversations();
       } else {
         const res = await chatAPI.sendMessage({
           receiverId: activeContact._id,
@@ -106,8 +119,8 @@ const ChatManagement = () => {
     setInputText('');
   };
 
-  // Fix: compare as strings to handle ObjectId vs string
   const isOwn = (msg) => {
+    if (!msg.sender) return false;
     const senderId = msg.sender?._id || msg.sender;
     return String(senderId) === String(user._id);
   };

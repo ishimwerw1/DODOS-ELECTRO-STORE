@@ -129,12 +129,8 @@ const AdminLayout = () => {
       >
         {/* Logo */}
         <div className="p-6 flex items-center gap-3 mb-4">
-          <div className="w-14 h-14 bg-gradient-to-br from-[#0d6efd] to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20 overflow-hidden">
-             {user?.settings?.general?.logoUrl ? (
-                <img src={user.settings.general.logoUrl} alt="Logo" className="w-full h-full object-contain p-1" />
-             ) : (
-                <FaBox size={24} />
-             )}
+           <div className="w-14 h-14 bg-gradient-to-br from-[#0d6efd] to-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-500/20 overflow-hidden">
+             <img src={user?.settings?.general?.logoUrl || '/dodos-logo.png'} alt="Logo" className="w-full h-full object-contain p-1" />
           </div>
           {!collapsed && (
             <div className="leading-none">

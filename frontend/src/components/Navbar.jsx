@@ -151,15 +151,7 @@ const Navbar = () => {
                 className="relative flex-shrink-0"
               >
                 <div className="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-br from-green-400 to-green-600 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-md shadow-green-500/20 overflow-hidden">
-                  {logoUrl ? (
-                    <img src={logoUrl} alt="DODOS" className="w-full h-full object-contain p-1" />
-                  ) : (
-                    <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
-                      <path d="M13 2L3 7v12l10 5 10-5V7L13 2z" fill="white" fillOpacity="0.15" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-                      <path d="M13 2v22M3 7l10 5 10-5" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-                      <circle cx="13" cy="12" r="3" fill="white"/>
-                    </svg>
-                  )}
+                  <img src={logoUrl || '/dodos-logo.png'} alt="DODOS" className="w-full h-full object-contain p-1" />
                 </div>
                 <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full" />
               </motion.div>
@@ -207,24 +199,22 @@ const Navbar = () => {
                 <FaSearch size={14} />
               </button>
 
-              {/* Chat (logged-in users only) */}
-              {isLoggedIn && user?.role === 'user' && (
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => openChat()}
-                  className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 border border-gray-200 text-gray-500 hover:text-green-600 hover:border-green-300 hover:bg-green-50 transition-all relative tap-highlight-none touch-target"
-                >
-                  <FaCommentDots size={16} />
-                  {chatUnreadCount > 0 && (
-                    <>
-                      <span className="absolute inset-0 rounded-xl bg-green-400 opacity-20 animate-ping" />
-                      <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[8px] font-black rounded-full flex items-center justify-center border-2 border-white z-10">
-                        {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
-                      </span>
-                    </>
-                  )}
-                </motion.button>
-              )}
+              {/* Chat (all users) */}
+              <motion.button
+                whileTap={{ scale: 0.9 }}
+                onClick={() => openChat()}
+                className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 border border-gray-200 text-gray-500 hover:text-green-600 hover:border-green-300 hover:bg-green-50 transition-all relative tap-highlight-none touch-target"
+              >
+                <FaCommentDots size={16} />
+                {chatUnreadCount > 0 && (
+                  <>
+                    <span className="absolute inset-0 rounded-xl bg-green-400 opacity-20 animate-ping" />
+                    <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[8px] font-black rounded-full flex items-center justify-center border-2 border-white z-10">
+                      {chatUnreadCount > 9 ? '9+' : chatUnreadCount}
+                    </span>
+                  </>
+                )}
+              </motion.button>
 
               {/* Wishlist */}
               <Link to="/wishlist" className="hidden sm:flex w-9 h-9 items-center justify-center rounded-xl bg-gray-100 border border-gray-200 text-gray-500 hover:text-green-600 hover:border-green-300 hover:bg-green-50 transition-all tap-highlight-none touch-target">
@@ -492,15 +482,7 @@ const Navbar = () => {
               <div className="flex items-center justify-between px-4 py-4 border-b border-gray-100 bg-gray-50">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center overflow-hidden">
-                    {logoUrl ? (
-                      <img src={logoUrl} alt="DODOS" className="w-full h-full object-contain p-1" />
-                    ) : (
-                      <svg width="16" height="16" viewBox="0 0 26 26" fill="none">
-                        <path d="M13 2L3 7v12l10 5 10-5V7L13 2z" fill="white" fillOpacity="0.2" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-                        <path d="M13 2v22M3 7l10 5 10-5" stroke="white" strokeWidth="1.5" strokeLinejoin="round"/>
-                        <circle cx="13" cy="12" r="3" fill="white"/>
-                      </svg>
-                    )}
+                    <img src={logoUrl || '/dodos-logo.png'} alt="DODOS" className="w-full h-full object-contain p-1" />
                   </div>
                   <div>
                     <span className="font-black text-sm text-gray-900 tracking-tight">DODOS<span className="text-green-500">.</span></span>

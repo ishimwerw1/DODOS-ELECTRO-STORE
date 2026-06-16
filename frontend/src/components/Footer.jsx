@@ -71,11 +71,7 @@ const Footer = () => {
         <div className="col-span-2 lg:col-span-4 space-y-4 sm:space-y-6">
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-6 transition-all overflow-hidden flex-shrink-0">
-              {logoUrl ? (
-                <img src={logoUrl} alt={storeName} className="w-full h-full object-contain p-1" />
-              ) : (
-                <FaBolt className="text-white text-lg sm:text-xl" />
-              )}
+              <img src={logoUrl || '/dodos-logo.png'} alt={storeName} className="w-full h-full object-contain p-1" />
             </div>
             <div>
               <p className="font-black text-base sm:text-lg text-white tracking-tight uppercase">{storeName}</p>

@@ -49,11 +49,7 @@ const ResetPassword = () => {
         <div className="flex flex-col items-center mb-10">
           <Link to="/" className="flex flex-col items-center group">
             <div className="w-16 h-16 bg-blue-600 rounded-[2rem] flex items-center justify-center shadow-2xl shadow-blue-500/20 group-hover:rotate-12 transition-all overflow-hidden mb-4">
-              {logoUrl ? (
-                <img src={logoUrl} alt={storeName} className="w-full h-full object-contain p-2" />
-              ) : (
-                <FaBolt className="text-white text-3xl" />
-              )}
+              <img src={logoUrl || '/dodos-logo.png'} alt={storeName} className="w-full h-full object-contain p-2" />
             </div>
             <h1 className="text-2xl font-black text-white uppercase tracking-tighter">{storeName}</h1>
             <p className="text-blue-500 text-[10px] font-black uppercase tracking-[0.3em] mt-1">Security Center</p>

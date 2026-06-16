@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
 import {
@@ -13,69 +14,23 @@ const ChatWindow = () => {
   const {
     isOpen, openChat, closeChat, activeProduct, setActiveProduct,
     messages, sendMessage, editMessage, deleteMessage,
-    adminId, unreadCount,
+    adminId, unreadCount, isLoggedIn, guestId,
   } = useChat();
-  const { isLoggedIn, user } = useAuth();
+  const { user } = useAuth();
 
   const [inputText, setInputText]       = useState('');
   const [replyingTo, setReplyingTo]     = useState(null);
   const [editingMsg, setEditingMsg]     = useState(null);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-  const [showInstallModal, setShowInstallModal] = useState(false);
-  const [isIOS, setIsIOS]               = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef       = useRef(null);
 
   useEffect(() => {
-    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream);
-    const handler = (e) => { e.preventDefault(); setDeferredPrompt(e); };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
-
-  // Scroll to bottom whenever messages change or chat opens
-  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isOpen]);
 
-  // Focus input when chat opens
   useEffect(() => {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 300);
   }, [isOpen]);
-
-  // Detect browser for install instructions
-  const getBrowserInfo = () => {
-    const ua = navigator.userAgent;
-    if (/SamsungBrowser/i.test(ua)) return 'samsung';
-    if (/OPR|Opera/i.test(ua))      return 'opera';
-    if (/Firefox/i.test(ua))        return 'firefox';
-    if (/Edg/i.test(ua))            return 'edge';
-    if (/Chrome/i.test(ua))         return 'chrome';
-    if (/Safari/i.test(ua))         return 'safari';
-    return 'other';
-  };
-
-  const handleInstallClick = () => {
-    // Already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-      toast.info('DODOS App is already installed!');
-      return;
-    }
-    // Chrome/Edge/Samsung/Opera support beforeinstallprompt
-    if (deferredPrompt) {
-      triggerBrowserInstall();
-      return;
-    }
-    // Show manual instructions for all other browsers
-    setShowInstallModal(true);
-  };
-
-  const triggerBrowserInstall = async () => {
-    if (!deferredPrompt) { setShowInstallModal(true); return; }
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') { setDeferredPrompt(null); setShowInstallModal(false); }
-  };
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -95,114 +50,21 @@ const ChatWindow = () => {
     setInputText('');
   };
 
-  // Admins don't see the chat widget — they use ChatManagement
-  if (!isLoggedIn || user?.role === 'admin') {
+  // Admins don't see the chat widget
+  if (user?.role === 'admin') {
     return null;
   }
 
-  // Helper: compare sender id (could be string or ObjectId)
   const isOwn = (msg) => {
-    const senderId = msg.sender?._id || msg.sender;
-    return String(senderId) === String(user._id);
+    if (msg.sender) {
+      const senderId = msg.sender?._id || msg.sender;
+      return String(senderId) === String(user?._id);
+    }
+    return msg.guestId === guestId;
   };
 
   return (
     <>
-      {/* Install modal — cross-browser */}
-      <AnimatePresence>
-        {showInstallModal && (
-          <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-7 max-w-sm w-full shadow-2xl border border-gray-200"
-            >
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-500 flex-shrink-0">
-                  <FaDownload size={22} />
-                </div>
-                <div>
-                  <h2 className="text-lg font-black text-gray-900">Install DODOS App</h2>
-                  <p className="text-xs text-gray-400">Works on all browsers & devices</p>
-                </div>
-              </div>
-
-              {/* Auto-install button (Chrome/Edge/Samsung/Opera) */}
-              {deferredPrompt && (
-                <button
-                  onClick={triggerBrowserInstall}
-                  className="w-full py-3.5 bg-green-500 hover:bg-green-600 text-white rounded-xl font-black text-sm mb-4 transition-all flex items-center justify-center gap-2 shadow-sm shadow-green-500/20"
-                >
-                  <FaCheckCircle size={14} /> Install Now — One Click
-                </button>
-              )}
-
-              {/* Manual instructions per browser */}
-              <div className="space-y-3 text-sm">
-                {/* iOS Safari */}
-                {isIOS && (
-                  <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                    <p className="font-black text-gray-700 text-xs uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                      <FaApple size={12} /> Safari (iPhone / iPad)
-                    </p>
-                    <ol className="text-gray-500 text-xs space-y-1 list-decimal list-inside">
-                      <li>Tap the <strong>Share</strong> button (box with arrow)</li>
-                      <li>Scroll and tap <strong>Add to Home Screen</strong></li>
-                      <li>Tap <strong>Add</strong> to confirm</li>
-                    </ol>
-                  </div>
-                )}
-
-                {/* Chrome / Edge / Brave */}
-                {!isIOS && !deferredPrompt && (
-                  <>
-                    <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                      <p className="font-black text-blue-700 text-xs uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                        <FaDesktop size={11} /> Chrome / Edge / Brave
-                      </p>
-                      <ol className="text-blue-600 text-xs space-y-1 list-decimal list-inside">
-                        <li>Click the <strong>⋮</strong> menu (top-right)</li>
-                        <li>Select <strong>Install app</strong> or <strong>Add to Home Screen</strong></li>
-                        <li>Click <strong>Install</strong> to confirm</li>
-                      </ol>
-                    </div>
-
-                    <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-                      <p className="font-black text-orange-700 text-xs uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                        <FaAndroid size={11} /> Samsung Browser / Opera
-                      </p>
-                      <ol className="text-orange-600 text-xs space-y-1 list-decimal list-inside">
-                        <li>Tap the <strong>☰</strong> menu</li>
-                        <li>Tap <strong>Add page to</strong> → <strong>Home screen</strong></li>
-                        <li>Tap <strong>Add</strong></li>
-                      </ol>
-                    </div>
-
-                    <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-                      <p className="font-black text-purple-700 text-xs uppercase tracking-widest mb-2 flex items-center gap-1.5">
-                        <FaDesktop size={11} /> Firefox
-                      </p>
-                      <ol className="text-purple-600 text-xs space-y-1 list-decimal list-inside">
-                        <li>Tap the <strong>⋮</strong> menu</li>
-                        <li>Tap <strong>Install</strong> or <strong>Add to Home Screen</strong></li>
-                      </ol>
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <button
-                onClick={() => setShowInstallModal(false)}
-                className="w-full mt-5 py-3 text-gray-400 hover:text-gray-600 text-sm font-semibold transition-colors border-t border-gray-100 pt-4"
-              >
-                Close
-              </button>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
       {/* Floating chat button */}
       <button
         onClick={() => isOpen ? closeChat() : openChat()}
@@ -305,7 +167,7 @@ const ChatWindow = () => {
                           <span className={`text-[9px] ${own ? 'text-white/60' : 'text-gray-400'}`}>
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
-                          {own && !msg.isDeleted && (
+                          {own && !msg.isDeleted && isLoggedIn && (
                             msg.isRead
                               ? <FaCheckDouble size={10} className="text-white/80" />
                               : <FaCheck size={10} className="text-white/60" />
@@ -313,7 +175,7 @@ const ChatWindow = () => {
                         </div>
 
                         {/* Hover actions */}
-                        {!msg.isDeleted && (
+                        {!msg.isDeleted && isLoggedIn && (
                           <div className={`absolute -top-7 ${own ? 'right-0' : 'left-0'} hidden group-hover:flex items-center gap-1 bg-white border border-gray-200 rounded-full px-2 py-1 shadow-lg z-10`}>
                             <button onClick={() => setReplyingTo(msg)} className="p-1 text-gray-400 hover:text-green-600 transition-colors" title="Reply">
                               <FaReply size={10} />

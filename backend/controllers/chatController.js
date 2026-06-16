@@ -148,15 +148,19 @@ export const getConversations = async (req, res, next) => {
     }).sort({ createdAt: -1 });
 
     const contactIds = new Set();
+    const guestIds = new Set();
     messages.forEach(msg => {
-      if (msg.sender.toString() !== userId) contactIds.add(msg.sender.toString());
-      if (msg.receiver.toString() !== userId) contactIds.add(msg.receiver.toString());
+      if (msg.guestId) {
+        guestIds.add(msg.guestId);
+      } else {
+        if (msg.sender && msg.sender.toString() !== userId) contactIds.add(msg.sender.toString());
+        if (msg.receiver && msg.receiver.toString() !== userId) contactIds.add(msg.receiver.toString());
+      }
     });
 
     const contacts = await User.find({ _id: { $in: Array.from(contactIds) } })
       .select('fullName email avatar profilePicture');
 
-    // Get last message and unread count for each contact
     const enrichedContacts = await Promise.all(contacts.map(async (contact) => {
       const lastMsg = await Message.findOne({
         $or: [
@@ -174,9 +178,24 @@ export const getConversations = async (req, res, next) => {
       return {
         ...contact.toObject(),
         lastMessage: lastMsg,
-        unreadCount
+        unreadCount,
+        isGuest: false,
       };
     }));
+
+    // Add guest conversations
+    for (const gId of guestIds) {
+      const lastMsg = await Message.findOne({ guestId: gId }).sort({ createdAt: -1 });
+      const unreadCount = await Message.countDocuments({ guestId: gId, receiver: userId, isRead: false, sender: null });
+      enrichedContacts.push({
+        _id: gId,
+        fullName: 'Guest (' + gId.substring(0, 8) + '...)',
+        email: 'Guest user',
+        lastMessage: lastMsg,
+        unreadCount,
+        isGuest: true,
+      });
+    }
 
     res.json({ success: true, conversations: enrichedContacts });
   } catch (error) {
@@ -208,9 +227,56 @@ export const getUnreadCount = async (req, res, next) => {
     const userId = req.user.id;
     const count = await Message.countDocuments({
       receiver: userId,
-      isRead: false
+      isRead: false,
+      sender: { $ne: null }
     });
     res.json({ success: true, count });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Send message as guest (no auth required)
+// @route   POST /api/chat/guest
+// @access  Public
+export const sendGuestMessage = async (req, res, next) => {
+  try {
+    const { guestId, text, product } = req.body;
+
+    if (!guestId || !text) {
+      return res.status(400).json({ message: 'Guest ID and text are required' });
+    }
+
+    const admin = await User.findOne({ role: 'admin' });
+    if (!admin) {
+      return res.status(404).json({ message: 'No admin available' });
+    }
+
+    const message = await Message.create({
+      guestId,
+      receiver: admin._id,
+      text,
+      product: product || null,
+    });
+
+    res.status(201).json({ success: true, message });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Get guest conversation by guestId
+// @route   GET /api/chat/guest/:guestId
+// @access  Public
+export const getGuestConversation = async (req, res, next) => {
+  try {
+    const { guestId } = req.params;
+
+    const messages = await Message.find({ guestId })
+      .sort({ createdAt: 1 })
+      .populate('replyTo');
+
+    res.json({ success: true, messages });
   } catch (error) {
     next(error);
   }

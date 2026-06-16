@@ -144,7 +144,10 @@ export const chatAPI = {
   getConversation: (otherUserId) => api.get(`/chat/${otherUserId}`),
   sendMessage: (data) => api.post('/chat', data),
   editMessage: (messageId, text) => api.put(`/chat/${messageId}`, { text }),
-  deleteMessage: (messageId) => api.delete(`/chat/${messageId}`)
+  deleteMessage: (messageId) => api.delete(`/chat/${messageId}`),
+  // Guest chat
+  sendGuestMessage: (data) => api.post('/chat/guest', data),
+  getGuestConversation: (guestId) => api.get(`/chat/guest/${guestId}`),
 };
 
 // AI APIs

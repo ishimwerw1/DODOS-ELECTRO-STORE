@@ -6,12 +6,19 @@ import {
   getAdminId,
   getUnreadCount,
   editMessage,
-  deleteMessage
+  deleteMessage,
+  sendGuestMessage,
+  getGuestConversation,
 } from '../controllers/chatController.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
+// Public (guest) routes — no auth required
+router.post('/guest', sendGuestMessage);
+router.get('/guest/:guestId', getGuestConversation);
+
+// Protected routes — auth required
 router.get('/admin', protect, getAdminId);
 router.get('/unread/count', protect, getUnreadCount);
 router.get('/conversations', protect, getConversations);

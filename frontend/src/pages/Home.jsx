@@ -98,7 +98,7 @@ const Home = () => {
       {/* ── HERO SLIDESHOW ── */}
       {slides.length > 0 && (
         <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-8 sm:mb-10">
-          <div className="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm" style={{ minHeight: 'clamp(320px, 60vw, 520px)' }}>
+          <div className="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm" style={{ minHeight: 'clamp(280px, 50vw, 520px)' }}>
 
             <AnimatePresence mode="wait">
               <motion.div
@@ -109,24 +109,24 @@ const Home = () => {
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="absolute inset-0"
               >
-                <div className="grid lg:grid-cols-2 h-full" style={{ minHeight: 'clamp(320px, 60vw, 520px)' }}>
+                <div className="flex flex-col-reverse lg:grid lg:grid-cols-2 h-full" style={{ minHeight: 'clamp(280px, 50vw, 520px)' }}>
 
                   {/* ── LEFT: text ── */}
-                  <div className="flex flex-col justify-center px-5 sm:px-8 py-8 xl:px-16 relative z-10">
+                  <div className="flex flex-col justify-center px-4 sm:px-8 py-4 sm:py-8 xl:px-16 relative z-10">
                     {/* Badge */}
                     <motion.div
                       initial={{ y: 12, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.15 }}
-                      className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-5"
+                      className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-5"
                     >
-                      <span className="bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-widest border border-green-200">
+                      <span className="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest border border-green-200">
                         {currentSlide.tag}
                       </span>
                       <div className="flex items-center gap-1">
-                        <FaStar size={10} className="text-yellow-400" />
-                        <span className="text-gray-700 text-xs font-black">{currentSlide.stats.rating}</span>
-                        <span className="text-gray-400 text-[10px] hidden sm:inline">({currentSlide.stats.reviews} reviews)</span>
+                        <FaStar size={9} className="text-yellow-400" />
+                        <span className="text-gray-700 text-[10px] sm:text-xs font-black">{currentSlide.stats.rating}</span>
+                        <span className="text-gray-400 text-[9px] hidden sm:inline">({currentSlide.stats.reviews} reviews)</span>
                       </div>
                     </motion.div>
 
@@ -135,7 +135,7 @@ const Home = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.25 }}
-                      className="text-xl sm:text-3xl xl:text-5xl font-black text-gray-900 leading-tight tracking-tight mb-2 sm:mb-4"
+                      className="text-base sm:text-3xl xl:text-5xl font-black text-gray-900 leading-tight tracking-tight mb-1 sm:mb-4"
                     >
                       {currentSlide.title}
                     </motion.h1>
@@ -145,7 +145,7 @@ const Home = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.35 }}
-                      className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-8 max-w-md leading-relaxed line-clamp-2 sm:line-clamp-none"
+                      className="text-gray-500 text-[10px] sm:text-sm mb-2 sm:mb-8 max-w-md leading-relaxed line-clamp-2 sm:line-clamp-none"
                     >
                       {currentSlide.subtitle}
                     </motion.p>
@@ -159,24 +159,24 @@ const Home = () => {
                     >
                       <Link
                         to="/products"
-                        className="bg-green-500 hover:bg-green-600 active:scale-95 text-white font-black px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-xl text-[10px] sm:text-sm flex items-center gap-2 transition-all shadow-sm shadow-green-500/20 group"
+                        className="bg-green-500 hover:bg-green-600 active:scale-95 text-white font-black px-3 sm:px-7 py-2 sm:py-3.5 rounded-xl text-[9px] sm:text-sm flex items-center gap-2 transition-all shadow-sm shadow-green-500/20 group"
                       >
-                        Shop Now <FaArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
+                        Shop Now <FaArrowRight size={9} className="group-hover:translate-x-1 transition-transform" />
                       </Link>
                       <Link
                         to="/categories"
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-xl text-[10px] sm:text-sm flex items-center gap-2 transition-all border border-gray-200"
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 sm:px-7 py-2 sm:py-3.5 rounded-xl text-[9px] sm:text-sm flex items-center gap-2 transition-all border border-gray-200"
                       >
                         Explore
                       </Link>
                     </motion.div>
 
-                    {/* Stats strip */}
+                    {/* Stats strip - hidden on smallest screens */}
                     <motion.div
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.6 }}
-                      className="mt-4 sm:mt-10 pt-3 sm:pt-6 border-t border-gray-100 grid grid-cols-3 gap-2 sm:gap-6"
+                      className="mt-3 sm:mt-10 pt-2 sm:pt-6 border-t border-gray-100 grid grid-cols-3 gap-2 sm:gap-6 hidden sm:grid"
                     >
                       {[
                         { value: '100%', label: 'Genuine' },
@@ -192,7 +192,7 @@ const Home = () => {
                   </div>
 
                   {/* ── RIGHT: image with mobile background ── */}
-                  <div className="relative flex items-center justify-center overflow-hidden"
+                  <div className="relative flex items-center justify-center overflow-hidden min-h-[130px] sm:min-h-0"
                     style={currentSlide.bannerImage ? {
                       backgroundImage: `url(${currentSlide.bannerImage})`,
                       backgroundSize: 'cover',
@@ -212,8 +212,8 @@ const Home = () => {
                     {/* Decorative circles (shown when no banner) */}
                     {!currentSlide.bannerImage && (
                       <>
-                        <div className="absolute w-72 sm:w-80 h-72 sm:h-80 rounded-full border-2 border-green-100 opacity-60 max-lg:scale-75" />
-                        <div className="absolute w-48 sm:w-56 h-48 sm:h-56 rounded-full bg-green-50 opacity-80 max-lg:scale-75" />
+                        <div className="absolute w-44 sm:w-80 h-44 sm:h-80 rounded-full border-2 border-green-100 opacity-40 max-lg:scale-50" />
+                        <div className="absolute w-28 sm:w-56 h-28 sm:h-56 rounded-full bg-green-50 opacity-60 max-lg:scale-50" />
                       </>
                     )}
 
@@ -225,12 +225,12 @@ const Home = () => {
                         transition={{ duration: 0.7, ease: 'easeOut' }}
                         src={currentSlide.image}
                         alt={currentSlide.title}
-                        className="relative z-10 max-h-[180px] sm:max-h-[260px] lg:max-h-[340px] max-w-[80%] sm:max-w-[90%] object-contain drop-shadow-xl"
+                        className="relative z-10 max-h-[110px] sm:max-h-[260px] lg:max-h-[340px] max-w-[70%] sm:max-w-[90%] object-contain drop-shadow-xl"
                       />
                     )}
 
-                    {/* Floating badges - hidden on very small screens */}
-                    <div className="hidden xs:block">
+                    {/* Floating badges - hidden on small screens */}
+                    <div className="hidden sm:block">
                       <motion.div
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -261,13 +261,13 @@ const Home = () => {
             </AnimatePresence>
 
             {/* Slide dots */}
-            <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20">
+            <div className="absolute bottom-2 sm:bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveSlide(i)}
                   className={`rounded-full transition-all duration-400 touch-target flex items-center justify-center ${
-                    i === activeSlide ? 'w-6 sm:w-8 h-2 bg-green-500' : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
+                    i === activeSlide ? 'w-5 sm:w-8 h-1.5 sm:h-2 bg-green-500' : 'w-1.5 sm:w-2 h-1.5 sm:h-2 bg-gray-300 hover:bg-gray-400'
                   }`}
                 />
               ))}
@@ -278,17 +278,17 @@ const Home = () => {
               <>
                 <button
                   onClick={() => setActiveSlide(prev => (prev - 1 + slides.length) % slides.length)}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 sm:w-9 h-8 sm:h-9 bg-white/90 sm:bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all touch-target"
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-7 sm:w-9 h-7 sm:h-9 bg-white/90 sm:bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all touch-target"
                   aria-label="Previous slide"
                 >
-                  <FaChevronRight size={10} className="rotate-180" />
+                  <FaChevronRight size={9} className="rotate-180" />
                 </button>
                 <button
                   onClick={() => setActiveSlide(prev => (prev + 1) % slides.length)}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 sm:w-9 h-8 sm:h-9 bg-white/90 sm:bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all touch-target"
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-7 sm:w-9 h-7 sm:h-9 bg-white/90 sm:bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all touch-target"
                   aria-label="Next slide"
                 >
-                  <FaChevronRight size={10} />
+                  <FaChevronRight size={9} />
                 </button>
               </>
             )}

@@ -6,7 +6,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import { motion } from 'framer-motion';
 import {
   FaEye, FaEyeSlash, FaEnvelope, FaLock,
-  FaArrowRight, FaShieldAlt, FaTruck, FaHeadset, FaBolt
+  FaArrowRight, FaShieldAlt, FaTruck, FaHeadset
 } from 'react-icons/fa';
 
 const GoogleIcon = () => (
@@ -80,7 +80,7 @@ const Login = ({ onSuccess }) => {
 
         <Link to="/" className="relative z-10 flex items-center gap-3">
           <div className="w-11 h-11 bg-green-500 rounded-xl flex items-center justify-center overflow-hidden shadow-lg">
-            {logoUrl ? <img src={logoUrl} alt={storeName} className="w-full h-full object-contain p-1" /> : <FaBolt className="text-white text-lg" />}
+            <img src={logoUrl || '/dodos-logo.png'} alt={storeName} className="w-full h-full object-contain p-1" />
           </div>
           <div>
             <p className="font-black text-xl text-white tracking-tight uppercase">{storeName}</p>

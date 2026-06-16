@@ -50,11 +50,7 @@ export const register = async (req, res) => {
       }
     }
 
-    // Generate verification code
-    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-    const verificationExpire = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
-
-    // Check if this is the designated admin account — auto-verify it
+    // Check if this is the designated admin account
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@dodos.com';
     const isAdminAccount = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
@@ -68,39 +64,10 @@ export const register = async (req, res) => {
         currency: detectedPrefs.currency,
         language: detectedPrefs.language,
       },
-      verificationCode: isAdminAccount ? undefined : verificationCode,
-      verificationExpire: isAdminAccount ? undefined : verificationExpire,
-      isVerified: isAdminAccount, // admin is auto-verified
+      isVerified: true, // email verification not required
     });
 
     await user.save();
-
-    // Send verification email only for regular users
-    if (!isAdminAccount) {
-      try {
-        await sendEmail({
-          email: user.email,
-          subject: 'Email Verification - Dodos Electro Store',
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-              <h2 style="color: #0d6efd; text-align: center;">DODOS ELECTRO STORE</h2>
-              <p>Hello ${user.fullName},</p>
-              <p>Welcome! Please verify your email address using the 6-digit code below:</p>
-              <div style="background: #f4f4f4; padding: 20px; text-align: center; border-radius: 5px; margin: 20px 0;">
-                <h1 style="letter-spacing: 8px; color: #333; margin: 0; font-size: 36px;">${verificationCode}</h1>
-              </div>
-              <p>This code expires in <strong>10 minutes</strong>.</p>
-              <p>If you didn't create an account, you can safely ignore this email.</p>
-              <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #777; text-align: center;">&copy; ${new Date().getFullYear()} DODOS Electro Store. All rights reserved.</p>
-            </div>
-          `,
-        });
-      } catch (err) {
-        console.error('Email send error:', err);
-        // Don't fail registration if email fails, but log it
-      }
-    }
 
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.status(201).json({
