@@ -344,10 +344,33 @@
     padding-bottom: 8px;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .mobile-scroll-x::-webkit-scrollbar { display: none; }
   .mobile-scroll-x > * {
     scroll-snap-align: start;
     flex-shrink: 0;
+  }
+}
+
+/* ─── Hero slide image on mobile ─── */
+@media (max-width: 767px) {
+  .hero-slide-img {
+    max-height: 160px;
+  }
+}
+
+/* ─── Rating bar animation on scroll ─── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-up,
+  .animate-slide-left,
+  .animate-slide-right,
+  .animate-fade-scale,
+  .animate-shimmer,
+  .animate-pulse-green,
+  .animate-wiggle,
+  .animate-bounce-in {
+    animation: none !important;
   }
 }
 

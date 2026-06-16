@@ -98,7 +98,7 @@ const Home = () => {
       {/* ── HERO SLIDESHOW ── */}
       {slides.length > 0 && (
         <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-8 sm:mb-10">
-          <div className="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm" style={{ minHeight: 'clamp(260px, 55vw, 480px)' }}>
+          <div className="relative rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-sm" style={{ minHeight: 'clamp(320px, 60vw, 520px)' }}>
 
             <AnimatePresence mode="wait">
               <motion.div
@@ -109,7 +109,7 @@ const Home = () => {
                 transition={{ duration: 0.5, ease: 'easeInOut' }}
                 className="absolute inset-0"
               >
-                <div className="grid lg:grid-cols-2 h-full" style={{ minHeight: 'clamp(260px, 55vw, 480px)' }}>
+                <div className="grid lg:grid-cols-2 h-full" style={{ minHeight: 'clamp(320px, 60vw, 520px)' }}>
 
                   {/* ── LEFT: text ── */}
                   <div className="flex flex-col justify-center px-5 sm:px-8 py-8 xl:px-16 relative z-10">
@@ -135,7 +135,7 @@ const Home = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.25 }}
-                      className="text-2xl sm:text-3xl xl:text-5xl font-black text-gray-900 leading-tight tracking-tight mb-3 sm:mb-4"
+                      className="text-xl sm:text-3xl xl:text-5xl font-black text-gray-900 leading-tight tracking-tight mb-2 sm:mb-4"
                     >
                       {currentSlide.title}
                     </motion.h1>
@@ -145,7 +145,7 @@ const Home = () => {
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.35 }}
-                      className="text-gray-500 text-sm mb-5 sm:mb-8 max-w-md leading-relaxed line-clamp-2 sm:line-clamp-none"
+                      className="text-gray-500 text-xs sm:text-sm mb-4 sm:mb-8 max-w-md leading-relaxed line-clamp-2 sm:line-clamp-none"
                     >
                       {currentSlide.subtitle}
                     </motion.p>
@@ -159,13 +159,13 @@ const Home = () => {
                     >
                       <Link
                         to="/products"
-                        className="bg-green-500 hover:bg-green-600 active:scale-95 text-white font-black px-5 sm:px-7 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow-sm shadow-green-500/20 group"
+                        className="bg-green-500 hover:bg-green-600 active:scale-95 text-white font-black px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-xl text-[10px] sm:text-sm flex items-center gap-2 transition-all shadow-sm shadow-green-500/20 group"
                       >
-                        Shop Now <FaArrowRight size={11} className="group-hover:translate-x-1 transition-transform" />
+                        Shop Now <FaArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
                       </Link>
                       <Link
                         to="/categories"
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-4 sm:px-7 py-3 sm:py-3.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all border border-gray-200"
+                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-xl text-[10px] sm:text-sm flex items-center gap-2 transition-all border border-gray-200"
                       >
                         Explore
                       </Link>
@@ -176,7 +176,7 @@ const Home = () => {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.6 }}
-                      className="mt-6 sm:mt-10 pt-4 sm:pt-6 border-t border-gray-100 grid grid-cols-3 gap-3 sm:gap-6"
+                      className="mt-4 sm:mt-10 pt-3 sm:pt-6 border-t border-gray-100 grid grid-cols-3 gap-2 sm:gap-6"
                     >
                       {[
                         { value: '100%', label: 'Genuine' },
@@ -184,15 +184,15 @@ const Home = () => {
                         { value: '1yr',  label: 'Warranty' },
                       ].map((s, i) => (
                         <div key={i}>
-                          <p className="text-green-600 font-black text-base sm:text-xl">{s.value}</p>
-                          <p className="text-gray-400 text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest mt-0.5">{s.label}</p>
+                          <p className="text-green-600 font-black text-sm sm:text-xl">{s.value}</p>
+                          <p className="text-gray-400 text-[8px] sm:text-[10px] font-semibold uppercase tracking-widest mt-0.5">{s.label}</p>
                         </div>
                       ))}
                     </motion.div>
                   </div>
 
-                  {/* ── RIGHT: image ── */}
-                  <div className="relative hidden lg:flex items-center justify-center overflow-hidden"
+                  {/* ── RIGHT: image with mobile background ── */}
+                  <div className="relative flex items-center justify-center overflow-hidden"
                     style={currentSlide.bannerImage ? {
                       backgroundImage: `url(${currentSlide.bannerImage})`,
                       backgroundSize: 'cover',
@@ -204,17 +204,17 @@ const Home = () => {
                       <div className="absolute inset-0 bg-white/60 backdrop-blur-[2px]" />
                     )}
 
+                    {/* Mobile-only soft background tint */}
+                    {!currentSlide.bannerImage && (
+                      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-green-50/40 lg:hidden" />
+                    )}
+
                     {/* Decorative circles (shown when no banner) */}
                     {!currentSlide.bannerImage && (
                       <>
-                        <div className="absolute w-80 h-80 rounded-full border-2 border-green-100 opacity-60" />
-                        <div className="absolute w-56 h-56 rounded-full bg-green-50 opacity-80" />
+                        <div className="absolute w-72 sm:w-80 h-72 sm:h-80 rounded-full border-2 border-green-100 opacity-60 max-lg:scale-75" />
+                        <div className="absolute w-48 sm:w-56 h-48 sm:h-56 rounded-full bg-green-50 opacity-80 max-lg:scale-75" />
                       </>
-                    )}
-
-                    {/* Background tint when no banner */}
-                    {!currentSlide.bannerImage && (
-                      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-green-50/40" />
                     )}
 
                     {currentSlide.image && (
@@ -225,47 +225,49 @@ const Home = () => {
                         transition={{ duration: 0.7, ease: 'easeOut' }}
                         src={currentSlide.image}
                         alt={currentSlide.title}
-                        className="relative z-10 max-h-[340px] max-w-[90%] object-contain drop-shadow-xl"
+                        className="relative z-10 max-h-[180px] sm:max-h-[260px] lg:max-h-[340px] max-w-[80%] sm:max-w-[90%] object-contain drop-shadow-xl"
                       />
                     )}
 
-                    {/* Floating badge — rating */}
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.5, type: 'spring' }}
-                      className="absolute top-8 right-8 bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-lg z-20"
-                    >
-                      <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Best Seller</p>
-                      <p className="text-green-600 font-black text-sm mt-0.5">⭐ {currentSlide.stats.rating} Rating</p>
-                    </motion.div>
+                    {/* Floating badges - hidden on very small screens */}
+                    <div className="hidden xs:block">
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.5, type: 'spring' }}
+                        className="absolute top-2 sm:top-8 right-2 sm:right-8 bg-white border border-gray-200 rounded-xl sm:rounded-2xl px-2 sm:px-4 py-1.5 sm:py-3 shadow-lg z-20"
+                      >
+                        <p className="text-[7px] sm:text-[9px] font-black text-gray-400 uppercase tracking-widest">Best Seller</p>
+                        <p className="text-green-600 font-black text-[10px] sm:text-sm mt-0.5">⭐ {currentSlide.stats.rating} Rating</p>
+                      </motion.div>
 
-                    {/* Floating delivery badge */}
-                    <motion.div
-                      initial={{ scale: 0, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      transition={{ delay: 0.7, type: 'spring' }}
-                      className="absolute bottom-8 left-8 bg-green-500 text-white rounded-2xl px-4 py-3 shadow-lg z-20 flex items-center gap-2"
-                    >
-                      <FaShippingFast size={14} />
-                      <div>
-                        <p className="text-[9px] font-black uppercase tracking-widest opacity-80">Delivery</p>
-                        <p className="font-black text-sm">Same Day</p>
-                      </div>
-                    </motion.div>
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.7, type: 'spring' }}
+                        className="absolute bottom-2 sm:bottom-8 left-2 sm:left-8 bg-green-500 text-white rounded-xl sm:rounded-2xl px-2 sm:px-4 py-1.5 sm:py-3 shadow-lg z-20 flex items-center gap-1 sm:gap-2"
+                      >
+                        <FaShippingFast size={10} className="sm:block hidden" />
+                        <FaShippingFast size={8} className="sm:hidden" />
+                        <div>
+                          <p className="text-[7px] sm:text-[9px] font-black uppercase tracking-widest opacity-80">Delivery</p>
+                          <p className="font-black text-[9px] sm:text-sm">Same Day</p>
+                        </div>
+                      </motion.div>
+                    </div>
                   </div>
                 </div>
               </motion.div>
             </AnimatePresence>
 
             {/* Slide dots */}
-            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+            <div className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 z-20">
               {slides.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveSlide(i)}
-                  className={`h-2 rounded-full transition-all duration-400 ${
-                    i === activeSlide ? 'w-8 bg-green-500' : 'w-2 bg-gray-300 hover:bg-gray-400'
+                  className={`rounded-full transition-all duration-400 touch-target flex items-center justify-center ${
+                    i === activeSlide ? 'w-6 sm:w-8 h-2 bg-green-500' : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
                   }`}
                 />
               ))}
@@ -276,15 +278,17 @@ const Home = () => {
               <>
                 <button
                   onClick={() => setActiveSlide(prev => (prev - 1 + slides.length) % slides.length)}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all"
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 sm:w-9 h-8 sm:h-9 bg-white/90 sm:bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all touch-target"
+                  aria-label="Previous slide"
                 >
-                  <FaChevronRight size={12} className="rotate-180" />
+                  <FaChevronRight size={10} className="rotate-180" />
                 </button>
                 <button
                   onClick={() => setActiveSlide(prev => (prev + 1) % slides.length)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all"
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 sm:w-9 h-8 sm:h-9 bg-white/90 sm:bg-white border border-gray-200 rounded-full shadow flex items-center justify-center text-gray-500 hover:bg-green-500 hover:text-white hover:border-green-500 transition-all touch-target"
+                  aria-label="Next slide"
                 >
-                  <FaChevronRight size={12} />
+                  <FaChevronRight size={10} />
                 </button>
               </>
             )}
@@ -504,27 +508,44 @@ const Home = () => {
       {/* ── REVIEWS SECTION ── */}
       <ReviewsSection />
 
-      {/* ── NEWSLETTER ── */}
+      {/* ── NEWSLETTER / ELITE CLUB ── */}
       <section className="max-w-[1600px] mx-auto px-3 sm:px-4 xl:px-8 mb-10">
-        <div className="bg-green-600 rounded-2xl p-6 sm:p-10 xl:p-16 relative overflow-hidden flex flex-col items-center text-center">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
+        <div className="relative bg-gradient-to-br from-green-600 via-green-600 to-green-700 rounded-2xl p-6 sm:p-10 xl:p-16 overflow-hidden flex flex-col items-center text-center">
+          {/* Background decorations */}
+          <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-green-500/20 rounded-full translate-y-1/2 -translate-x-1/4" />
+          <div className="absolute top-1/2 left-1/4 w-2 h-2 bg-white/10 rounded-full" />
+          <div className="absolute top-1/3 right-1/4 w-3 h-3 bg-white/10 rounded-full" />
+
           <div className="relative z-10 max-w-2xl">
-            <div className="w-12 sm:w-16 h-12 sm:h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="w-12 sm:w-16 h-12 sm:h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 backdrop-blur-sm"
+            >
               <FaEnvelope className="text-white text-xl sm:text-2xl" />
-            </div>
-            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-white mb-4 tracking-tight">Join the Elite Club</h2>
-            <p className="text-green-100 text-sm sm:text-base font-medium mb-6 sm:mb-8">Subscribe to get exclusive early access to deals, new arrivals, and professional repair guides.</p>
-            <form className="flex flex-col sm:flex-row items-center gap-3 bg-white/10 p-2 rounded-xl border border-white/20 w-full max-w-lg mx-auto">
+            </motion.div>
+            <h2 className="text-2xl sm:text-3xl xl:text-4xl font-black text-white mb-3 sm:mb-4 tracking-tight">Join the Elite Club</h2>
+            <p className="text-green-100 text-sm sm:text-base font-medium mb-6 sm:mb-8 max-w-lg mx-auto">Subscribe to get exclusive early access to deals, new arrivals, and professional repair guides.</p>
+            <motion.form
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="flex flex-col sm:flex-row items-center gap-3 bg-white/10 p-2 rounded-xl border border-white/20 w-full max-w-lg mx-auto backdrop-blur-sm"
+            >
               <input
                 type="email"
                 placeholder="Enter your email address"
-                className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-white font-medium placeholder:text-green-200 text-sm"
+                className="flex-1 bg-transparent border-none outline-none px-4 py-3 text-white font-medium placeholder:text-green-200 text-sm w-full"
               />
-              <button className="bg-white text-green-600 font-black text-xs uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-green-50 transition-all w-full sm:w-auto">
+              <button className="bg-white text-green-600 font-black text-xs uppercase tracking-widest px-6 py-3 rounded-lg hover:bg-green-50 transition-all w-full sm:w-auto shadow-lg">
                 Subscribe
               </button>
-            </form>
-            <p className="text-[10px] text-green-200 font-bold uppercase tracking-widest mt-4">No spam. Unsubscribe anytime.</p>
+            </motion.form>
+            <p className="text-[10px] text-green-200/70 font-bold uppercase tracking-widest mt-4 flex items-center justify-center gap-1.5">
+              <FaCheckCircle size={8} /> No spam. Unsubscribe anytime.
+            </p>
           </div>
         </div>
       </section>
